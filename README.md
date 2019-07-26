@@ -2,6 +2,9 @@
 
 Send log4j2 errors via SendGrid service
 
+[![Build Status](https://travis-ci.org/akunzai/log4j2-sendgrid-appender.svg?branch=master)](https://travis-ci.org/akunzai/log4j2-sendgrid-appender)
+[![Download](https://api.bintray.com/packages/akunzai/maven/log4j2-sendgrid-appender/images/download.svg)](https://bintray.com/akunzai/maven/log4j2-sendgrid-appender/_latestVersion)
+
 ## Requirements
 
 - Java 8 runtime environments
@@ -9,15 +12,22 @@ Send log4j2 errors via SendGrid service
 
 ## Installation
 
-Gradle
+### Gradle
 
 ```groovy
-repositories {
-  jcenter()
-}
 dependencies {
-    implementation 'com.github.akunzai:log4j2-sendgrid-appender:1.0-SNAPSHOT'
+    implementation 'com.github.akunzai:log4j2-sendgrid-appender:1.0.0'
 }
+```
+
+### Maven
+
+```xml
+<dependency>
+  <groupId>com.github.akunzai</groupId>
+  <artifactId>log4j2-sendgrid-appender</artifactId>
+  <version>1.0.0</version>
+</dependency>
 ```
 
 ## Usage
@@ -27,7 +37,7 @@ dependencies {
 The following is the minimum needed configuration for `log4j2.xml` to send an error email
 
 > By default, logger events will be buffered (defaults: 512 messages) and triggered by ERROR level message,
-> formatted as HTMLLayout.
+> formatted as HTML Layout.
 
 ```xml
 <Configuration monitorInterval="5" status="WARN"
