@@ -22,10 +22,50 @@ dependencies {
     testImplementation "junit:junit:4.12"
 }
 
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
             from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                description = 'Send log4j2 errors via SendGrid service'
+                url = 'https://github.com/akunzai/log4j2-sendgrid-appender'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'akunzai'
+                        name = 'Charley Wu'
+                        email = 'akunzai@gmail.com'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/akunzai/log4j2-sendgrid-appender'
+                }
+            }
         }
     }
 }
@@ -38,12 +78,17 @@ bintray {
         repo = 'maven'
         name = project.name
         desc = 'Send log4j2 errors via SendGrid service'
+        websiteUrl = 'https://github.com/akunzai/log4j2-sendgrid-appender'
+        issueTrackerUrl = 'https://github.com/akunzai/log4j2-sendgrid-appender/issues'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/akunzai/log4j2-sendgrid-appender.git'
         githubRepo = 'akunzai/log4j2-sendgrid-appender'
         labels = ['log4j','sendgrid']
-        version {
-            name = project.version
-        }
+    }
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
     }
 }
