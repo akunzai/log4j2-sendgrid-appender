@@ -87,6 +87,7 @@ public class SendGridAppender extends AbstractAppender {
     /**
      * Create a SendGrid Appender.
      *
+     * @param config The logging Configuration
      * @param name The name of the Appender
      * @param to The comma-separated list of recipient email addresses.
      * @param cc The comma-separated list of CC email addresses.
