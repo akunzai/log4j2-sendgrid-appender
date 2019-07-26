@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'maven-publish'
     id 'com.jfrog.bintray' version '1.8.4'
 }
 
@@ -21,9 +22,18 @@ dependencies {
     testImplementation "junit:junit:4.12"
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
 bintray {
     user = project.hasProperty('bintray.user') ? project.property('bintray.user') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintray.key') ? project.property('bintray.key') : System.getenv('BINTRAY_KEY')
+    publications = ['maven']
     pkg {
         repo = 'maven'
         name = project.name
