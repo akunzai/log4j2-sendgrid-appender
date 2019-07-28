@@ -1,6 +1,6 @@
 # log4j2-sendgrid-appender
 
-Send log4j2 errors via SendGrid service
+Send [log4j2](https://logging.apache.org/log4j/2.x/) errors via [SendGrid](https://app.sendgrid.com) service
 
 [![Build Status](https://travis-ci.org/akunzai/log4j2-sendgrid-appender.svg?branch=master)](https://travis-ci.org/akunzai/log4j2-sendgrid-appender)
 [![Download](https://api.bintray.com/packages/akunzai/maven/log4j2-sendgrid-appender/images/download.svg)](https://bintray.com/akunzai/maven/log4j2-sendgrid-appender/_latestVersion)
@@ -8,15 +8,17 @@ Send log4j2 errors via SendGrid service
 ## Requirements
 
 - Java 8 runtime environments
-- an SendGrid account with your [API key](https://app.sendgrid.com/settings/api_keys)
+- a SendGrid account with your [API key](https://app.sendgrid.com/settings/api_keys)
 
 ## Installation
+
+Currently, this package only host on [jcenter](https://bintray.com/bintray/jcenter).
 
 ### Gradle
 
 ```groovy
 dependencies {
-    implementation 'com.github.akunzai:log4j2-sendgrid-appender:1.0.0'
+  implementation 'com.github.akunzai:log4j2-sendgrid-appender:1.0.0'
 }
 ```
 
@@ -36,12 +38,10 @@ dependencies {
 
 The following is the minimum needed configuration for `log4j2.xml` to send an error email
 
-> By default, logger events will be buffered (defaults: 512 messages) and triggered by ERROR level message,
-> formatted as HTML Layout.
+> By default, logger events will be buffering with previous 512 messages and filterd by [ThresholdFilter](https://logging.apache.org/log4j/2.x/manual/filters.html#ThresholdFilter), formatted as [HTML](https://logging.apache.org/log4j/2.x/manual/layouts.html#HTMLLayout).
 
 ```xml
-<Configuration monitorInterval="5" status="WARN"
-    packages="com.github.akunzai.log4j">
+<Configuration packages="com.github.akunzai.log4j">
     <Appenders>
         <SendGrid name="SendGrid"
             subject="Error Notification from ${sys:hostName}"
@@ -58,13 +58,13 @@ The following is the minimum needed configuration for `log4j2.xml` to send an er
 </Configuration>
 ```
 
-### Pattern Layout Usage
+### Sample Usage
 
-Sending error message without buffers, and use CompositeFilter(BurstFilter,ThresholdFilter) instead of ThresholdFilter.
+Sending error message without buffering, use [PatternLayout](https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout) instead of HtmlLayout, 
+and use [CompositeFilter](https://logging.apache.org/log4j/2.x/manual/filters.html#CompositeFilter)(BurstFilter,ThresholdFilter) instead of ThresholdFilter.
 
 ```xml
-<Configuration monitorInterval="5" status="WARN"
-    packages="com.github.akunzai.log4j">
+<Configuration packages="com.github.akunzai.log4j">
     <Appenders>
         <SendGrid name="SendGrid"
             subject="Error Notification from ${sys:hostName}"
