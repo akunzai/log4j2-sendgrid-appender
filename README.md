@@ -2,7 +2,7 @@
 
 Send [log4j2](https://logging.apache.org/log4j/2.x/) errors via [SendGrid](https://sendgrid.com) service
 
-[![Build Status](https://travis-ci.org/akunzai/log4j2-sendgrid-appender.svg?branch=master)](https://travis-ci.org/akunzai/log4j2-sendgrid-appender)
+[![Build Status](https://travis-ci.com/akunzai/log4j2-sendgrid-appender.svg?branch=master)](https://travis-ci.com/akunzai/log4j2-sendgrid-appender)
 [![Download](https://api.bintray.com/packages/akunzai/maven/log4j2-sendgrid-appender/images/download.svg)](https://bintray.com/akunzai/maven/log4j2-sendgrid-appender/_latestVersion)
 
 ## Requirements
