@@ -2,7 +2,6 @@ language: java
 install: true
 
 os: linux
-dist: trusty
 jdk: openjdk8
 
 script:
