@@ -18,7 +18,7 @@ Currently, this package only host on [jcenter](https://bintray.com/bintray/jcent
 
 ```groovy
 dependencies {
-  implementation 'com.github.akunzai:log4j2-sendgrid-appender:1.0.0'
+  implementation 'com.github.akunzai:log4j2-sendgrid-appender:2.0.0'
 }
 ```
 
@@ -28,7 +28,7 @@ dependencies {
 <dependency>
   <groupId>com.github.akunzai</groupId>
   <artifactId>log4j2-sendgrid-appender</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
