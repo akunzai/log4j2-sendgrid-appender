@@ -1,6 +1,8 @@
 package com.github.akunzai.log4j;
 
 import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;

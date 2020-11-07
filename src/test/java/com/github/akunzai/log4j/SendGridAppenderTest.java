@@ -1,9 +1,9 @@
 package com.github.akunzai.log4j;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sendgrid.Content;
-import com.sendgrid.Mail;
-import com.sendgrid.Personalization;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Personalization;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;

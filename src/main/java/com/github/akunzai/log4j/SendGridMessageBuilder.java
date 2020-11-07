@@ -1,8 +1,8 @@
 package com.github.akunzai.log4j;
 
-import com.sendgrid.Email;
-import com.sendgrid.Mail;
-import com.sendgrid.Personalization;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
 import org.apache.logging.log4j.core.util.Builder;
 
 import javax.mail.Message;
