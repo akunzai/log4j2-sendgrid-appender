@@ -60,13 +60,12 @@ publishing {
                 }
                 developers {
                     developer {
-                        id = 'akunzai'
                         name = 'Charley Wu'
                         email = 'akunzai@gmail.com'
                     }
                 }
                 scm {
-                    url = 'https://github.com/akunzai/log4j2-sendgrid-appender'
+                    url = 'https://github.com/akunzai/log4j2-sendgrid-appender.git'
                 }
             }
         }
