@@ -1,0 +1,26 @@
+name: CD
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assemble sourcesJar javadocJar generatePomFileForMavenPublication
+      - name: Upload to Bintray
+        env:
+          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
+          BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
+        if: env.BINTRAY_KEY != null
+        run: ./gradlew bintrayUpload
