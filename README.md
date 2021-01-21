@@ -1,9 +1,15 @@
 # log4j2-sendgrid-appender
 
-Send [log4j2](https://logging.apache.org/log4j/2.x/) errors via [SendGrid](https://sendgrid.com) service
+[![Build Status][ci-badge]][ci] [![Code Coverage][codecov-badge]][codecov] [![Download][bintry-badge]][bintry]
 
-[![Build Status](https://travis-ci.com/akunzai/log4j2-sendgrid-appender.svg?branch=master)](https://travis-ci.com/akunzai/log4j2-sendgrid-appender)
-[![Download](https://api.bintray.com/packages/akunzai/maven/log4j2-sendgrid-appender/images/download.svg)](https://bintray.com/akunzai/maven/log4j2-sendgrid-appender/_latestVersion)
+[ci]: https://github.com/akunzai/log4j2-sendgrid-appender/actions?query=workflow%3ACI
+[ci-badge]: https://github.com/akunzai/log4j2-sendgrid-appender/workflows/CI/badge.svg
+[codecov]: https://codecov.io/gh/akunzai/log4j2-sendgrid-appender
+[codecov-badge]: https://codecov.io/gh/akunzai/log4j2-sendgrid-appender/branch/main/graph/badge.svg?token=RDIFA6DTUZ
+[bintry]: https://bintray.com/akunzai/maven/log4j2-sendgrid-appender/_latestVersion
+[bintry-badge]: https://api.bintray.com/packages/akunzai/maven/log4j2-sendgrid-appender/images/download.svg
+
+Send [log4j2](https://logging.apache.org/log4j/2.x/) errors via [SendGrid](https://sendgrid.com) service
 
 ## Requirements
 
