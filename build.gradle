@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'jacoco'
     id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.8.5'
+    id 'signing'
     id 'com.github.spotbugs' version '4.6.0'
 }
 
@@ -12,7 +12,7 @@ version '2.0.0'
 sourceCompatibility = 1.8
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -24,6 +24,11 @@ dependencies {
     testImplementation "junit:junit:4.12"
     spotbugs 'com.github.spotbugs:spotbugs:4.1.4'
     spotbugsPlugins "com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0"
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 test {
@@ -38,22 +43,10 @@ jacocoTestReport {
     }
 }
 
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    archiveClassifier = 'sources'
-}
-
-task javadocJar(type: Jar) {
-    from javadoc
-    archiveClassifier = 'javadoc'
-}
-
 publishing {
     publications {
-        maven(MavenPublication) {
+        mavenJava(MavenPublication) {
             from components.java
-            artifact sourcesJar
-            artifact javadocJar
             versionMapping {
                 usage('java-api') {
                     fromResolutionOf('runtimeClasspath')
@@ -63,6 +56,7 @@ publishing {
                 }
             }
             pom {
+                name = 'log4j2-sendgrid-appender'
                 description = 'Send log4j2 errors via SendGrid service'
                 url = 'https://github.com/akunzai/log4j2-sendgrid-appender'
                 licenses {
@@ -73,6 +67,7 @@ publishing {
                 }
                 developers {
                     developer {
+                        id = 'akunzai'
                         name = 'Charley Wu'
                         email = 'akunzai@gmail.com'
                     }
@@ -83,27 +78,26 @@ publishing {
             }
         }
     }
-}
-
-bintray {
-    user = project.hasProperty('bintray.user') ? project.property('bintray.user') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintray.key') ? project.property('bintray.key') : System.getenv('BINTRAY_KEY')
-    publications = ['maven']
-    pkg {
-        repo = 'maven'
-        name = project.name
-        desc = 'Send log4j2 errors via SendGrid service'
-        websiteUrl = 'https://github.com/akunzai/log4j2-sendgrid-appender'
-        issueTrackerUrl = 'https://github.com/akunzai/log4j2-sendgrid-appender/issues'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/akunzai/log4j2-sendgrid-appender.git'
-        githubRepo = 'akunzai/log4j2-sendgrid-appender'
-        labels = ['log4j','sendgrid']
+    repositories {
+        maven {
+            name = "OSSRH"
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = project.findProperty('sonatype.user') ?: System.getenv("SONATYPE_USER")
+                password = project.findProperty('sonatype.token') ?: System.getenv("SONATYPE_TOKEN")
+            }
+        }
     }
 }
 
+signing {
+    sign publishing.publications.mavenJava
+}
+
 javadoc {
-    if(JavaVersion.current().isJava9Compatible()) {
+    if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
     }
 }

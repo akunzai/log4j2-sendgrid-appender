@@ -14,13 +14,15 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Build with Gradle
-        run: |
-          chmod +x ./gradlew
-          ./gradlew assemble sourcesJar javadocJar generatePomFileForMavenPublication
-      - name: Upload to Bintray
+      - name: Publish package to the Maven Central Repository
         env:
-          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-          BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
-        if: env.BINTRAY_KEY != null
-        run: ./gradlew bintrayUpload
+          SONATYPE_USER: ${{ secrets.SONATYPE_USER }}
+          SONATYPE_TOKEN: ${{ secrets.SONATYPE_TOKEN }}
+        if: env.SONATYPE_TOKEN != null
+        run: |
+          printf "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode > $RUNNER_TEMP/secring.gpg
+          chmod +x ./gradlew
+          ./gradlew -Psigning.keyId=${{ secrets.GPG_KEYID }} \
+          -Psigning.password=${{ secrets.GPG_PASSPHRASE }} \
+          -Psigning.secretKeyRingFile=$RUNNER_TEMP/secring.gpg \
+          publish
