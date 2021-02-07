@@ -1,13 +1,13 @@
 # log4j2-sendgrid-appender
 
-[![Build Status][ci-badge]][ci] [![Code Coverage][codecov-badge]][codecov] [![Download][bintry-badge]][bintry]
+[![Build Status][ci-badge]][ci] [![Code Coverage][codecov-badge]][codecov] [![Download][maven-badge]][maven]
 
 [ci]: https://github.com/akunzai/log4j2-sendgrid-appender/actions?query=workflow%3ACI
 [ci-badge]: https://github.com/akunzai/log4j2-sendgrid-appender/workflows/CI/badge.svg
 [codecov]: https://codecov.io/gh/akunzai/log4j2-sendgrid-appender
 [codecov-badge]: https://codecov.io/gh/akunzai/log4j2-sendgrid-appender/branch/main/graph/badge.svg?token=RDIFA6DTUZ
-[bintry]: https://bintray.com/akunzai/maven/log4j2-sendgrid-appender/_latestVersion
-[bintry-badge]: https://api.bintray.com/packages/akunzai/maven/log4j2-sendgrid-appender/images/download.svg
+[maven]: https://search.maven.org/artifact/com.github.akunzai/log4j2-sendgrid-appender
+[maven-badge]: https://img.shields.io/maven-central/v/com.github.akunzai/log4j2-sendgrid-appender.svg
 
 Send [log4j2](https://logging.apache.org/log4j/2.x/) errors via [SendGrid](https://sendgrid.com) service
 
@@ -17,8 +17,6 @@ Send [log4j2](https://logging.apache.org/log4j/2.x/) errors via [SendGrid](https
 - a SendGrid account with your [API key](https://app.sendgrid.com/settings/api_keys)
 
 ## Installation
-
-Currently, this package only host on [jcenter](https://bintray.com/bintray/jcenter).
 
 ### Gradle
 
@@ -42,7 +40,7 @@ dependencies {
 
 ### General Usage
 
-The following is the minimum needed configuration for `log4j2.xml` to send an error email
+The following is the minimum configuration needed for `log4j2.xml` to send an error email
 
 > By default, logger events will be buffering with previous 512 messages and filterd by [ThresholdFilter](https://logging.apache.org/log4j/2.x/manual/filters.html#ThresholdFilter), formatted as [HTML](https://logging.apache.org/log4j/2.x/manual/layouts.html#HTMLLayout).
 
