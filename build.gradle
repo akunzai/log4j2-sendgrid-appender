@@ -21,7 +21,7 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-core:2.9.0"
     annotationProcessor "org.apache.logging.log4j:log4j-core:2.9.0"
     testImplementation "com.sendgrid:sendgrid-java:4.7.1"
-    testImplementation "junit:junit:4.12"
+    testImplementation "junit:junit:4.13.1"
     spotbugs 'com.github.spotbugs:spotbugs:4.1.4'
     spotbugsPlugins "com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0"
 }
