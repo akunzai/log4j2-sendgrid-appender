@@ -1,0 +1,26 @@
+<Configuration packages="com.github.akunzai.log4j">
+    <Appenders>
+        <SendGrid name="SendGrid"
+                  subject="Error Notification from ${sys:hostName}"
+                  from="${env:LOG_MAIL_FROM}"
+                  to="${env:LOG_MAIL_TO}"
+                  apiKey="${env:SENDGRID_API_KEY}"
+                  sandboxMode="true"
+                  bufferSize="1">
+        </SendGrid>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d [%t] %-5level: %msg%n%throwable"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root Level="FATAL">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <Logger name="sync" level="INFO">
+            <AppenderRef ref="SendGrid"/>
+        </Logger>
+        <AsyncLogger name="async" level="INFO">
+            <AppenderRef ref="SendGrid"/>
+        </AsyncLogger>
+    </Loggers>
+</Configuration>
