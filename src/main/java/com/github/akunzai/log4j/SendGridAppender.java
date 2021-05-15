@@ -79,6 +79,9 @@ public class SendGridAppender extends AbstractAppender {
         private String apiKey;
 
         @PluginBuilderAttribute
+        private boolean sandboxMode;
+
+        @PluginBuilderAttribute
         private int bufferSize = DEFAULT_BUFFER_SIZE;
 
         private ManagerFactory<SendGridManager, SendGridManager.FactoryData> factory;
@@ -157,6 +160,15 @@ public class SendGridAppender extends AbstractAppender {
         }
 
         /**
+         * @param sandboxMode Enable The SendGrid <a href="https://sendgrid.com/docs/for-developers/sending-email/sandbox-mode/">Sandbox Mode</a>?
+         * @return Builder
+         */
+        public Builder setSandboxMode(final boolean sandboxMode){
+            this.sandboxMode = sandboxMode;
+            return this;
+        }
+
+        /**
          * @param factory The customized SendGridManager factory for testing
          * @return Builder
          */
@@ -204,7 +216,7 @@ public class SendGridAppender extends AbstractAppender {
             }
             final Configuration configuration = getConfiguration();
             final SendGridManager manager = SendGridManager.getSendGridManager(
-                    configuration, to, cc, bcc, from, replyTo, subject, host, apiKey,
+                    configuration, to, cc, bcc, from, replyTo, subject, host, apiKey, sandboxMode,
                     bufferSize, factory);
             return new SendGridAppender(getName(),
                     getFilter(),
@@ -240,6 +252,7 @@ public class SendGridAppender extends AbstractAppender {
      * @param subject The subject of the email message.
      * @param host The SendGrid host (defaults to api.sendgrid.com).
      * @param apiKey The SendGrid API Key
+     * @param sandboxMode Enable The SendGrid <a href="https://sendgrid.com/docs/for-developers/sending-email/sandbox-mode/">Sandbox Mode</a>?
      * @param bufferSize How many log events should be buffered for inclusion in the message?
      * @param layout The layout to use (defaults to HtmlLayout).
      * @param filter The Filter or null (defaults to ThresholdFilter, level of ERROR).
@@ -256,6 +269,7 @@ public class SendGridAppender extends AbstractAppender {
                                                   @PluginAttribute("subject") final String subject,
                                                   @PluginAttribute("host") final String host,
                                                   @PluginAttribute(value = "apiKey", sensitive = true) final String apiKey,
+                                                  @PluginAttribute("sandboxMode") final String sandboxMode,
                                                   @PluginAttribute("bufferSize") final String bufferSize,
                                                   @PluginElement("Layout") Layout<? extends Serializable> layout,
                                                   @PluginElement("Filter") Filter filter,
@@ -273,7 +287,7 @@ public class SendGridAppender extends AbstractAppender {
 
         final Configuration configuration = config != null ? config : new DefaultConfiguration();
         final SendGridManager manager = SendGridManager.getSendGridManager(
-                configuration, to, cc, bcc, from, replyTo, subject, host, apiKey,
+                configuration, to, cc, bcc, from, replyTo, subject, host, apiKey, Boolean.parseBoolean(sandboxMode),
                 bufferSize == null ? DEFAULT_BUFFER_SIZE : Integer.parseInt(bufferSize), null);
 
         if (manager == null) {
