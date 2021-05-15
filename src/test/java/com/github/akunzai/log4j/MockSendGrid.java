@@ -14,13 +14,15 @@ public class MockSendGrid extends SendGrid {
         super(apiKey);
     }
 
+    @Override
     public Response makeCall(Request request) {
         requests.add(request);
         Response response = new Response();
         response.setStatusCode(200);
         response.setBody("{\"message\":\"success\"}");
         Map<String, String> headers = new HashMap<>();
-        headers.put("Test", "Header");
+        // https://sendgrid.com/docs/glossary/x-message-id/
+        headers.put("X-Message-ID", UUID.randomUUID().toString());
         response.setHeaders(headers);
         return response;
     }

@@ -3,6 +3,8 @@ package com.github.akunzai.log4j;
 import com.sendgrid.*;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.MailSettings;
+import com.sendgrid.helpers.mail.objects.Setting;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -27,8 +29,17 @@ import java.nio.charset.StandardCharsets;
  * Manager for sending SendGrid events.
  */
 class SendGridManager extends AbstractManager {
+    private static final SendGridManagerFactory FACTORY = new SendGridManagerFactory();
+    private static final MailSettings SANDBOX_MAIL_SETTINGS;
 
-    private final SendGrid sendGrid;
+    static {
+        final Setting setting = new Setting();
+        setting.setEnable(true);
+        SANDBOX_MAIL_SETTINGS = new MailSettings();
+        SANDBOX_MAIL_SETTINGS.setSandboxMode(setting);
+    }
+
+    final SendGrid sendGrid;
 
     private final CyclicBuffer<LogEvent> buffer;
 
@@ -41,18 +52,14 @@ class SendGridManager extends AbstractManager {
         this.buffer = new CyclicBuffer<>(LogEvent.class, data.numElements);
     }
 
-    // for Unit-Testing
-    SendGrid getSendGrid(){
-        return this.sendGrid;
-    }
-
     static SendGridManager getSendGridManager(final Configuration config,
                                               final String to, final String cc, final String bcc,
                                               final String from, final String replyTo,
                                               final String subject, final String host,
                                               final String apiKey,
+                                              final boolean sandboxMode,
                                               final int numElements,
-                                              ManagerFactory<SendGridManager, FactoryData> factory
+                                              final ManagerFactory<SendGridManager, FactoryData> factory
                                               ) {
         final String name = "SendGrid:" + NameUtil.md5(host + ':' + apiKey);
         final AbstractStringLayout.Serializer subjectSerializer = PatternLayout.newSerializerBuilder()
@@ -60,8 +67,8 @@ class SendGridManager extends AbstractManager {
                 .setPattern(subject)
                 .build();
 
-        return getManager(name, factory, new FactoryData(to, cc, bcc, from, replyTo,
-                subjectSerializer, host, apiKey, numElements));
+        return getManager(name, factory == null ? FACTORY : factory, new FactoryData(to, cc, bcc, from, replyTo,
+                subjectSerializer, host, apiKey, sandboxMode, numElements));
     }
 
     void add(LogEvent event) {
@@ -115,14 +122,17 @@ class SendGridManager extends AbstractManager {
     }
 
     private Mail createMailMessage(final LogEvent appendEvent) throws AddressException {
-        return new SendGridMessageBuilder()
+        final Mail message = new SendGridMessageBuilder()
             .setFrom(data.from)
             .setReplyTo(data.replyTo)
             .setRecipients(Message.RecipientType.TO, data.to)
             .setRecipients(Message.RecipientType.CC, data.cc)
             .setRecipients(Message.RecipientType.BCC, data.bcc)
-            .setSubject(data.subject.toSerializable(appendEvent))
-            .build();
+            .setSubject(data.subject.toSerializable(appendEvent)).build();
+        if (data.sandboxMode){
+            message.setMailSettings(SANDBOX_MAIL_SETTINGS);
+        }
+        return message;
     }
 
     /**
@@ -137,6 +147,7 @@ class SendGridManager extends AbstractManager {
         final AbstractStringLayout.Serializer subject;
         final String host;
         final String apiKey;
+        final boolean sandboxMode;
         final int numElements;
 
         FactoryData(
@@ -148,6 +159,7 @@ class SendGridManager extends AbstractManager {
                 final AbstractStringLayout.Serializer subject,
                 final String host,
                 final String apiKey,
+                final boolean sandboxMode,
                 final int numElements) {
             this.to = to;
             this.cc = cc;
@@ -157,12 +169,12 @@ class SendGridManager extends AbstractManager {
             this.subject = subject;
             this.host = host;
             this.apiKey = apiKey;
+            this.sandboxMode = sandboxMode;
             this.numElements = numElements;
         }
     }
 
     static class SendGridManagerFactory implements ManagerFactory<SendGridManager, FactoryData> {
-
         @Override
         public SendGridManager createManager(final String name, final FactoryData data) {
             final SendGrid sendGrid = new SendGrid(data.apiKey);

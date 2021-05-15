@@ -1,6 +1,7 @@
 package com.github.akunzai.log4j;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Personalization;
@@ -8,40 +9,48 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class SendGridAppenderTest {
-
-    @BeforeClass
-    public static void setupClass() {
-        SendGridAppender.setManagerFactory(new MockSendGridManagerFactory());
-    }
 
     @Test
     public void testDelivery() {
         final String subjectKey = getClass().getName();
         final String subjectValue = "SubjectValue1";
         ThreadContext.put(subjectKey, subjectValue);
-        final SendGridAppender appender = SendGridAppender.createAppender(null, "Test",
-            "to@example.com", "cc@example.com", "bcc@example.com", "from@example.com", "replyTo@example.com",
-            "Subject Pattern %X{" + subjectKey + "}", null, "apiKey",
-            "3", null, null, "true");
+        final SendGridAppender appender = SendGridAppender.newBuilder()
+                .setName("SendGrid")
+                .setTo("to@example.com")
+                .setCc("cc@example.com")
+                .setBcc("bcc@example.com")
+                .setFrom("from@example.com")
+                .setReplyTo("replyTo@example.com")
+                .setSubject("Subject Pattern %X{" + subjectKey + "}")
+                .setHost("localhost")
+                .setApiKey("apiKey")
+                .setBufferSize(3)
+                .setIgnoreExceptions(true)
+                .setFactory(new MockSendGridManagerFactory())
+                .build();
         assertNotNull(appender);
         appender.start();
 
         final LoggerContext context = Configurator.initialize(
-            ConfigurationBuilderFactory.newConfigurationBuilder()
-            .setStatusLevel(Level.OFF)
-            .build());
+                ConfigurationBuilderFactory.newConfigurationBuilder()
+                        .setStatusLevel(Level.OFF)
+                        .build());
         final Logger logger = context.getLogger("SendGridAppenderTest");
         logger.addAppender(appender);
         logger.setAdditive(false);
@@ -53,14 +62,14 @@ public class SendGridAppenderTest {
         logger.debug("Debug message #4");
         logger.error("Error with exception", new RuntimeException("Exception message"));
         logger.error("Error message #2");
-        final MockSendGrid sendGrid = (MockSendGrid) appender.getManager().getSendGrid();
+        final MockSendGrid sendGrid = (MockSendGrid) appender.manager.sendGrid;
         assertEquals(2, sendGrid.getRequests().size());
         final ObjectMapper mapper = new ObjectMapper();
         final Iterator<Mail> messages = sendGrid.getRequests().stream().map(req -> {
             try {
                 return mapper.readValue(req.getBody(), Mail.class);
             } catch (IOException e) {
-                throw new RuntimeException(e.getMessage(),e);
+                throw new RuntimeException(e.getMessage(), e);
             }
         }).collect(Collectors.toList()).iterator();
         final Mail message = messages.next();
@@ -90,5 +99,13 @@ public class SendGridAppenderTest {
         assertFalse(body2.contains("Debug message #4"));
         assertFalse(body2.contains("Error with exception"));
         assertTrue(body2.contains("Error message #2"));
+    }
+
+    static class MockSendGridManagerFactory implements ManagerFactory<SendGridManager, SendGridManager.FactoryData> {
+        @Override
+        public SendGridManager createManager(final String name, final SendGridManager.FactoryData data) {
+            final SendGrid sendGrid = new MockSendGrid(data.apiKey);
+            return new SendGridManager(name, sendGrid, data);
+        }
     }
 }

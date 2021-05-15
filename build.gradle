@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'com.github.akunzai'
-version '2.0.1'
+version '2.1.0'
 
 sourceCompatibility = 1.8
 
@@ -21,6 +21,7 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-core:2.13.2"
     annotationProcessor "org.apache.logging.log4j:log4j-core:2.13.2"
     testImplementation "junit:junit:4.13.2"
+    testImplementation "com.lmax:disruptor:3.4.4" // required by log4j2 AsyncLogger
     spotbugs 'com.github.spotbugs:spotbugs:4.2.3'
     spotbugsPlugins "com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0"
 }

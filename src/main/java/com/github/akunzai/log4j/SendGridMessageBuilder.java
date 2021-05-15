@@ -16,10 +16,18 @@ import java.util.*;
 public class SendGridMessageBuilder implements Builder<Mail> {
     private final Mail message;
 
+    /**
+     * The SendGridMessageBuilder
+     */
     public SendGridMessageBuilder() {
         this.message = new Mail();
     }
 
+    /**
+     * @param from Email address of the sender.
+     * @return SendGridMessageBuilder
+     * @throws AddressException Invalid Email address.
+     */
     public SendGridMessageBuilder setFrom(final String from) throws AddressException {
         final Email email = parseEmail(from);
         if (email != null) {
@@ -38,6 +46,11 @@ public class SendGridMessageBuilder implements Builder<Mail> {
         return this;
     }
 
+    /**
+     * @param replyTo Comma-separated list of Reply-To email addresses.
+     * @return SendGridMessageBuilder
+     * @throws AddressException Invalid Email address.
+     */
     public SendGridMessageBuilder setReplyTo(final String replyTo) throws AddressException {
         final Email email = parseEmail(replyTo);
         if (email != null) {
@@ -46,6 +59,12 @@ public class SendGridMessageBuilder implements Builder<Mail> {
         return this;
     }
 
+    /**
+     * @param recipientType The recipient type (To,Cc,Bcc)
+     * @param recipients Comma-separated list of recipient email addresses.
+     * @return SendGridMessageBuilder
+     * @throws AddressException Invalid Email address.
+     */
     public SendGridMessageBuilder setRecipients(final Message.RecipientType recipientType,
                                                 final String recipients) throws AddressException {
         final List<Personalization> personalizationList = message.getPersonalization();
@@ -71,6 +90,10 @@ public class SendGridMessageBuilder implements Builder<Mail> {
         return this;
     }
 
+    /**
+     * @param subject Subject for the email messages.
+     * @return SendGridMessageBuilder
+     */
     public SendGridMessageBuilder setSubject(final String subject){
         if (subject != null){
             message.setSubject(subject);
@@ -95,7 +118,7 @@ public class SendGridMessageBuilder implements Builder<Mail> {
     private static Collection<Email> parseEmails(final String email) throws AddressException {
         if (email == null || email.isEmpty()) return Collections.emptySet();
         final InternetAddress[] addresses = InternetAddress.parse(email, true);
-        final Collection<Email> emails = new ArrayList<>();
+        final List<Email> emails = new ArrayList<>();
         for (InternetAddress address : addresses) {
             if (address.getPersonal() == null || address.getPersonal().isEmpty()) {
                 emails.add(new Email(address.getAddress()));
@@ -103,6 +126,6 @@ public class SendGridMessageBuilder implements Builder<Mail> {
                 emails.add(new Email(address.getAddress(), address.getPersonal()));
             }
         }
-        return emails;
+        return Collections.unmodifiableList(emails);
     }
 }
