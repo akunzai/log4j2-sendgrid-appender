@@ -27,8 +27,9 @@ import java.nio.charset.StandardCharsets;
  * Manager for sending SendGrid events.
  */
 class SendGridManager extends AbstractManager {
+    private static final SendGridManagerFactory FACTORY = new SendGridManagerFactory();
 
-    private final SendGrid sendGrid;
+    final SendGrid sendGrid;
 
     private final CyclicBuffer<LogEvent> buffer;
 
@@ -41,18 +42,13 @@ class SendGridManager extends AbstractManager {
         this.buffer = new CyclicBuffer<>(LogEvent.class, data.numElements);
     }
 
-    // for Unit-Testing
-    SendGrid getSendGrid(){
-        return this.sendGrid;
-    }
-
     static SendGridManager getSendGridManager(final Configuration config,
                                               final String to, final String cc, final String bcc,
                                               final String from, final String replyTo,
                                               final String subject, final String host,
                                               final String apiKey,
                                               final int numElements,
-                                              ManagerFactory<SendGridManager, FactoryData> factory
+                                              final ManagerFactory<SendGridManager, FactoryData> factory
                                               ) {
         final String name = "SendGrid:" + NameUtil.md5(host + ':' + apiKey);
         final AbstractStringLayout.Serializer subjectSerializer = PatternLayout.newSerializerBuilder()
@@ -60,7 +56,7 @@ class SendGridManager extends AbstractManager {
                 .setPattern(subject)
                 .build();
 
-        return getManager(name, factory, new FactoryData(to, cc, bcc, from, replyTo,
+        return getManager(name, factory == null ? FACTORY : factory, new FactoryData(to, cc, bcc, from, replyTo,
                 subjectSerializer, host, apiKey, numElements));
     }
 

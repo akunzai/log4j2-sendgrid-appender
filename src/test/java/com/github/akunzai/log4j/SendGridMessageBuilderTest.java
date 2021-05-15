@@ -53,13 +53,13 @@ public class SendGridMessageBuilderTest {
 
         builder.setRecipients(Message.RecipientType.TO, addresses);
         assertArrayEquals(InternetAddress.parse(addresses),
-            builder.build().getPersonalization().get(0).getTos().stream().map(to -> {
-                try {
-                    return new InternetAddress(to.getEmail());
-                } catch (AddressException e) {
-                    throw new RuntimeException(e.getMessage(),e);
-                }
-            }).toArray());
+                builder.build().getPersonalization().get(0).getTos().stream().map(to -> {
+                    try {
+                        return new InternetAddress(to.getEmail());
+                    } catch (AddressException e) {
+                        throw new RuntimeException(e.getMessage(), e);
+                    }
+                }).toArray());
     }
 
     @Test
