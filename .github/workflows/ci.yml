@@ -20,15 +20,28 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 10
+
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
           java-version: ${{ matrix.java }}
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Build with Gradle
         run: |
           chmod +x ./gradlew
           ./gradlew build
+
       - uses: codecov/codecov-action@v1
         with:
           name: unittests-${{ matrix.java }}
