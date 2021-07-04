@@ -1,5 +1,6 @@
 .gradle
 .idea/
 build/
+out/
 gradle.properties
 log4j2-test.xml
