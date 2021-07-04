@@ -40,6 +40,10 @@ test {
     finalizedBy jacocoTestReport
 }
 
+spotbugs {
+    excludeFilter = file("$projectDir/spotbugs-exclude.xml")
+}
+
 jacocoTestReport {
     dependsOn test
     reports {
