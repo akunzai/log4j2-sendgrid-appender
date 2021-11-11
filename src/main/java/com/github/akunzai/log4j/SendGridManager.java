@@ -83,7 +83,7 @@ class SendGridManager extends AbstractManager {
     /**
      * Send the contents of the cyclic buffer as an e-mail message.
      * @param layout The layout for formatting the events.
-     * @param appendEvent The event that triggered the send.
+     * @param appendEvent The event that triggered to send.
      */
     void sendEvents(final Layout<?> layout, final LogEvent appendEvent) {
         try {
