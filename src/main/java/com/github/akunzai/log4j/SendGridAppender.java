@@ -24,7 +24,7 @@ import java.io.Serializable;
  * memory requirements at a reasonable level while still delivering useful
  * application context.
  * <p>
- * By default, an email message will formatted as HTML. This can be modified by
+ * By default, an email message will format as HTML. This can be modified by
  * setting a layout for the appender.
  * <p>
  * By default, an email message will be sent when an ERROR or higher severity
