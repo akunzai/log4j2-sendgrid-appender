@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'com.github.akunzai'
-version '2.1.2'
+version '2.2.0'
 
 sourceCompatibility = 1.8
 
@@ -16,10 +16,10 @@ repositories {
 }
 
 dependencies {
-    implementation "com.sendgrid:sendgrid-java:4.7.4"
-    implementation "com.sun.mail:javax.mail:1.5.0"
-    implementation "org.apache.logging.log4j:log4j-core:2.15.0"
-    annotationProcessor "org.apache.logging.log4j:log4j-core:2.15.0"
+    implementation "com.sendgrid:sendgrid-java:4.8.1"
+    implementation "com.sun.mail:jakarta.mail:1.6.7"
+    implementation "org.apache.logging.log4j:log4j-core:2.16.0"
+    annotationProcessor "org.apache.logging.log4j:log4j-core:2.16.0"
     testImplementation "junit:junit:4.13.2"
     testImplementation "com.lmax:disruptor:3.4.4" // required by log4j2 AsyncLogger
     spotbugs 'com.github.spotbugs:spotbugs:4.5.1'
