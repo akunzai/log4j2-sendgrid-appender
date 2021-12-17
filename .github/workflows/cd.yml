@@ -2,11 +2,8 @@ name: CD
 
 on:
   push:
-    branches:
-      - main
-      - 'release/*'
     tags:
-      - '*'
+      - 'v*'
 
 jobs:
   deploy:
