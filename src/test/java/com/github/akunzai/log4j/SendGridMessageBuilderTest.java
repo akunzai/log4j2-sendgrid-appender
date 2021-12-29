@@ -1,12 +1,15 @@
 package com.github.akunzai.log4j;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.mail.Message;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SendGridMessageBuilderTest {
 
