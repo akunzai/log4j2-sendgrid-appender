@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'com.github.akunzai'
-version '2.2.2'
+version '2.2.3'
 
 sourceCompatibility = 1.8
 
@@ -24,6 +24,13 @@ dependencies {
     testImplementation "com.lmax:disruptor:3.4.4" // required by log4j2 AsyncLogger
     spotbugs 'com.github.spotbugs:spotbugs:4.5.2'
     spotbugsPlugins "com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0"
+
+    constraints {
+        implementation('com.fasterxml.jackson.core:jackson-databind:2.13.1') {
+            // https://github.com/FasterXML/jackson-databind/issues/3328
+            because 'previous versions have known security vulnerabilities'
+        }
+    }
 }
 
 java {
