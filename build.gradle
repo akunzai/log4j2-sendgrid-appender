@@ -22,7 +22,7 @@ dependencies {
     annotationProcessor "org.apache.logging.log4j:log4j-core:2.17.1"
     testImplementation "org.junit.jupiter:junit-jupiter:5.8.2"
     testImplementation "com.lmax:disruptor:3.4.4" // required by log4j2 AsyncLogger
-    spotbugs 'com.github.spotbugs:spotbugs:4.5.2'
+    spotbugs 'com.github.spotbugs:spotbugs:4.5.3'
     spotbugsPlugins "com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0"
 
     constraints {
