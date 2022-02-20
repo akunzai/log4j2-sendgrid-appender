@@ -113,3 +113,12 @@ javadoc {
         options.addBooleanOption('html5', true)
     }
 }
+
+task runTestRunner(type: JavaExec) {
+    group = "Verification"
+    description "Run the test runner"
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.github.akunzai.log4j.SendGridTestRunner'
+    // https://logging.apache.org/log4j/2.x/manual/async.html#AllAsync
+    systemProperties = ['log4j2.contextSelector': 'org.apache.logging.log4j.core.async.AsyncLoggerContextSelector']
+}
