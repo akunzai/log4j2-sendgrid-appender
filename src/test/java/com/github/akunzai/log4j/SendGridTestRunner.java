@@ -1,13 +1,23 @@
 package com.github.akunzai.log4j;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class SendGridTestRunner {
-    public static void main(String[] args) {
-        final Logger logger = LogManager.getLogger("sync");
-        logger.error("error message");
-        final Logger asyncLogger = LogManager.getLogger("async");
-        asyncLogger.error("error message");
+
+    private static final Logger LOGGER = LogManager.getLogger(SendGridTestRunner.class);
+    private static final Random RANDOM = new Random();
+    private static final Level[] LEVELS = new Level[]{Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR};
+
+    public static void main(String[] args) throws InterruptedException {
+        for (int i = 0; i < 512; i++) {
+            final Level level = LEVELS[RANDOM.nextInt(LEVELS.length)];
+            LOGGER.log(level, level.toString().toLowerCase());
+            Thread.sleep(ThreadLocalRandom.current().nextInt(100, 10000));
+        }
     }
 }

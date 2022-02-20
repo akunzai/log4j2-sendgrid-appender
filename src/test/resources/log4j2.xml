@@ -1,26 +1,53 @@
-<Configuration packages="com.github.akunzai.log4j">
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="30" status="WARN">
+    <Properties>
+        <Property name="MAIL_LOG_PATTERN">Date: %date%nLevel: %level%nLogger: %logger%nMessage: %msg%n%rEx{10}%n
+        </Property>
+    </Properties>
     <Appenders>
+        <!-- https://logging.apache.org/log4j/2.x/manual/appenders.html#ConsoleAppender -->
+        <Console name="Console">
+            <PatternLayout pattern="%highlight{%date %-5level [%thread:%logger] - %msg}%n"/>
+        </Console>
         <SendGrid name="SendGrid"
+                  bufferSize="3"
                   subject="Error Notification from ${sys:hostName}"
                   from="${env:LOG_MAIL_FROM}"
                   to="${env:LOG_MAIL_TO}"
                   apiKey="${env:SENDGRID_API_KEY}"
-                  sandboxMode="true"
-                  bufferSize="1">
+                  sandboxMode="true">
+            <PatternLayout pattern="${sys:MAIL_LOG_PATTERN}"/>
+            <Filters>
+                <ThresholdFilter level="ERROR"/>
+                <!-- https://logging.apache.org/log4j/2.x/manual/filters.html#BurstFilter
+                  limit the burstInterval to 1 hour
+                  rate = maxBurst/burstInterval = 1/3600
+                 -->
+                <BurstFilter level="ERROR" rate="0.0002" maxBurst="1"/>
+            </Filters>
         </SendGrid>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d [%t] %-5level: %msg%n%throwable"/>
-        </Console>
+        <!-- https://logging.apache.org/log4j/2.x/manual/appenders.html#SMTPAppender -->
+        <SMTP name="SMTP"
+              bufferSize="3"
+              subject="Error Notification from ${sys:hostName}"
+              from="${env:LOG_MAIL_FROM}" to="${env:LOG_MAIL_TO}"
+              smtpHost="${env:SMTP_HOST:-localhost}"
+              smtpPort="${env:SMTP_PORT:-25}">
+            <PatternLayout pattern="${sys:MAIL_LOG_PATTERN}"/>
+            <Filters>
+                <ThresholdFilter level="ERROR"/>
+                <!-- https://logging.apache.org/log4j/2.x/manual/filters.html#BurstFilter
+                  limit the burstInterval to 5 minutes
+                  rate = maxBurst/burstInterval = 1/300
+                 -->
+                <BurstFilter level="ERROR" rate="0.003" maxBurst="1"/>
+            </Filters>
+        </SMTP>
     </Appenders>
     <Loggers>
-        <Root Level="FATAL">
+        <Root level="INFO" includeLocation="true">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="SMTP"/>
         </Root>
-        <Logger name="sync" level="INFO">
-            <AppenderRef ref="SendGrid"/>
-        </Logger>
-        <AsyncLogger name="async" level="INFO">
-            <AppenderRef ref="SendGrid"/>
-        </AsyncLogger>
     </Loggers>
 </Configuration>
