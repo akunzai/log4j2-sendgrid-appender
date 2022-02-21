@@ -86,7 +86,7 @@ Sending error message with throttling
                   from="${sys:LOG_MAIL_FROM:-${env:LOG_MAIL_FROM}}"
                   to="${sys:LOG_MAIL_TO:-${env:LOG_MAIL_TO}}"
                   apiKey="${env:SENDGRID_API_KEY}">
-            <PatternLayout pattern="%date|%level|%logger%n%msg%n%rEx{10}%n"/>
+            <PatternLayout pattern="%date|%level|%logger|%msg%n%rEx{5}%n"/>
             <Filters>
                 <ThresholdFilter level="ERROR"/>
                 <BurstFilter level="ERROR" rate="0.0002" maxBurst="1"/>

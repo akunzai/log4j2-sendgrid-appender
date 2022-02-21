@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration monitorInterval="30" status="WARN">
     <Properties>
-        <Property name="MAIL_LOG_PATTERN">%date|%level|%logger%n%msg%n%rEx{10}%n</Property>
+        <Property name="MAIL_LOG_PATTERN">%date|%level|%logger|%msg%n%rEx{5}%n</Property>
     </Properties>
     <Appenders>
         <!-- https://logging.apache.org/log4j/2.x/manual/appenders.html#ConsoleAppender -->
         <Console name="Console">
-            <PatternLayout pattern="%highlight{%date %-5level [%thread:%logger] - %msg}%n"/>
+            <PatternLayout pattern="%date|%highlight{%-5level}|%logger|%msg%n"/>
         </Console>
         <SendGrid name="SendGrid"
                   bufferSize="3"
