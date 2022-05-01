@@ -23,7 +23,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:5.8.2"
     testImplementation "com.lmax:disruptor:3.4.4" // required by log4j2 AsyncLogger
     spotbugs 'com.github.spotbugs:spotbugs:4.6.0'
-    spotbugsPlugins "com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0"
+    spotbugsPlugins "com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0"
 
     constraints {
         implementation('com.fasterxml.jackson.core:jackson-databind:2.13.2.2') {
