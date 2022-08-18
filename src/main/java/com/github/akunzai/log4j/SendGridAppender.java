@@ -87,6 +87,14 @@ public class SendGridAppender extends AbstractAppender {
         private ManagerFactory<SendGridManager, SendGridManager.FactoryData> factory;
 
         /**
+         * The Plugin Builder for SendGridAppender
+         */
+        public Builder() {
+        }
+
+        /**
+         * Set the recipient email addresses
+         *
          * @param to Comma-separated list of recipient email addresses.
          * @return Builder
          */
@@ -96,6 +104,8 @@ public class SendGridAppender extends AbstractAppender {
         }
 
         /**
+         * Set the CC email addresses
+         *
          * @param cc Comma-separated list of CC email addresses.
          * @return Builder
          */
@@ -105,6 +115,8 @@ public class SendGridAppender extends AbstractAppender {
         }
 
         /**
+         * Set the BCC email addresses
+         *
          * @param bcc Comma-separated list of BCC email addresses.
          * @return Builder
          */
@@ -114,6 +126,8 @@ public class SendGridAppender extends AbstractAppender {
         }
 
         /**
+         * Set the email address of the sender
+         *
          * @param from Email address of the sender.
          * @return Builder
          */
@@ -123,6 +137,8 @@ public class SendGridAppender extends AbstractAppender {
         }
 
         /**
+         * Set the Reply-To email addresses
+         *
          * @param replyTo Comma-separated list of Reply-To email addresses.
          * @return Builder
          */
@@ -132,6 +148,8 @@ public class SendGridAppender extends AbstractAppender {
         }
 
         /**
+         * Set the email subject
+         *
          * @param subject Subject template for the email messages.
          * @return Builder
          * @see org.apache.logging.log4j.core.layout.PatternLayout
@@ -142,6 +160,8 @@ public class SendGridAppender extends AbstractAppender {
         }
 
         /**
+         * Set the SendGrid host
+         *
          * @param host The SendGrid host. By defaults, use api.sendgrid.com.
          * @return Builder
          */
@@ -151,6 +171,8 @@ public class SendGridAppender extends AbstractAppender {
         }
 
         /**
+         * Set the SendGrid API Key
+         *
          * @param apiKey The SendGrid API Key
          * @return Builder
          */
@@ -160,24 +182,30 @@ public class SendGridAppender extends AbstractAppender {
         }
 
         /**
-         * @param sandboxMode Enable The SendGrid <a href="https://sendgrid.com/docs/for-developers/sending-email/sandbox-mode/">Sandbox Mode</a>?
+         * Set the SendGrid Sandbox mode
+         *
+         * @param sandboxMode Enable the SendGrid <a href="https://sendgrid.com/docs/for-developers/sending-email/sandbox-mode/">Sandbox mode</a>?
          * @return Builder
          */
-        public Builder setSandboxMode(final boolean sandboxMode){
+        public Builder setSandboxMode(final boolean sandboxMode) {
             this.sandboxMode = sandboxMode;
             return this;
         }
 
         /**
-         * @param factory The customized SendGridManager factory for testing
+         * Set the customized SendGridManager factory for testing
+         *
+         * @param factory The SendGridManager factory
          * @return Builder
          */
-        public Builder setFactory(final ManagerFactory<SendGridManager, SendGridManager.FactoryData> factory){
+        public Builder setFactory(final ManagerFactory<SendGridManager, SendGridManager.FactoryData> factory) {
             this.factory = factory;
             return this;
         }
 
         /**
+         * Set the buffer size before sending an email
+         *
          * @param bufferSize Number of log events to buffer before sending an email. Defaults to {@value #DEFAULT_BUFFER_SIZE}.
          * @return Builder
          */
@@ -187,8 +215,9 @@ public class SendGridAppender extends AbstractAppender {
         }
 
         /**
-         * @param layout Specifies the layout used for the email message body. By default, this uses the
-         * {@linkplain HtmlLayout#createDefaultLayout() default HTML layout}.
+         * Set the email body layout
+         *
+         * @param layout Specifies the layout used for the email message body. By default, this uses the {@linkplain HtmlLayout#createDefaultLayout() default HTML layout}.
          * @return Builder
          */
         @Override
@@ -197,8 +226,9 @@ public class SendGridAppender extends AbstractAppender {
         }
 
         /**
-         * @param filter Specifies the filter used for this appender. By default, uses a {@link ThresholdFilter} with a level of
-         * ERROR.
+         * Set the filter for this appender
+         *
+         * @param filter Specifies the filter used for this appender. By default, uses a {@link ThresholdFilter} with a level of ERROR.
          * @return Builder
          */
         @Override
@@ -240,24 +270,24 @@ public class SendGridAppender extends AbstractAppender {
     /**
      * Create a SendGrid Appender.
      *
-     * @deprecated Use {@link #newBuilder()} to create and configure a {@link SendGridAppender.Builder} instance.
-     * @see Builder
-     * @param config The logging Configuration
-     * @param name The name of the Appender
-     * @param to The comma-separated list of recipient email addresses.
-     * @param cc The comma-separated list of CC email addresses.
-     * @param bcc The comma-separated list of BCC email addresses.
-     * @param from The email address of the sender.
-     * @param replyTo The comma-separated list of reply-to email addresses.
-     * @param subject The subject of the email message.
-     * @param host The SendGrid host (defaults to api.sendgrid.com).
-     * @param apiKey The SendGrid API Key
+     * @param config      The logging Configuration
+     * @param name        The name of the Appender
+     * @param to          The comma-separated list of recipient email addresses.
+     * @param cc          The comma-separated list of CC email addresses.
+     * @param bcc         The comma-separated list of BCC email addresses.
+     * @param from        The email address of the sender.
+     * @param replyTo     The comma-separated list of reply-to email addresses.
+     * @param subject     The subject of the email message.
+     * @param host        The SendGrid host (defaults to api.sendgrid.com).
+     * @param apiKey      The SendGrid API Key
      * @param sandboxMode Enable The SendGrid <a href="https://sendgrid.com/docs/for-developers/sending-email/sandbox-mode/">Sandbox Mode</a>?
-     * @param bufferSize How many log events should be buffered for inclusion in the message?
-     * @param layout The layout to use (defaults to HtmlLayout).
-     * @param filter The Filter or null (defaults to ThresholdFilter, level of ERROR).
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they are propagated to the caller.
+     * @param bufferSize  How many log events should be buffered for inclusion in the message?
+     * @param layout      The layout to use (defaults to HtmlLayout).
+     * @param filter      The Filter or null (defaults to ThresholdFilter, level of ERROR).
+     * @param ignore      If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they are propagated to the caller.
      * @return The SendGridAppender
+     * @see Builder
+     * @deprecated Use {@link #newBuilder()} to create and configure a {@link SendGridAppender.Builder} instance.
      */
     public static SendGridAppender createAppender(@PluginConfiguration final Configuration config,
                                                   @PluginAttribute("name") @Required final String name,

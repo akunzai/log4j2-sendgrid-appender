@@ -60,7 +60,7 @@ class SendGridManager extends AbstractManager {
                                               final boolean sandboxMode,
                                               final int numElements,
                                               final ManagerFactory<SendGridManager, FactoryData> factory
-                                              ) {
+    ) {
         final String name = "SendGrid:" + NameUtil.md5(host + ':' + apiKey);
         final AbstractStringLayout.Serializer subjectSerializer = PatternLayout.newSerializerBuilder()
                 .setConfiguration(config)
@@ -82,7 +82,8 @@ class SendGridManager extends AbstractManager {
 
     /**
      * Send the contents of the cyclic buffer as an e-mail message.
-     * @param layout The layout for formatting the events.
+     *
+     * @param layout      The layout for formatting the events.
      * @param appendEvent The event that triggered to send.
      */
     void sendEvents(final Layout<?> layout, final LogEvent appendEvent) {
@@ -96,7 +97,7 @@ class SendGridManager extends AbstractManager {
             }
             final StringBuilder stringBuilder = new StringBuilder();
             final byte[] header = layout.getHeader();
-            if (header != null){
+            if (header != null) {
                 stringBuilder.append(new String(header, StandardCharsets.UTF_8));
             }
             final LogEvent[] priorEvents = buffer.removeAll();
@@ -105,7 +106,7 @@ class SendGridManager extends AbstractManager {
             }
             stringBuilder.append(layout.toSerializable(appendEvent));
             final byte[] footer = layout.getFooter();
-            if (footer != null){
+            if (footer != null) {
                 stringBuilder.append(new String(footer, StandardCharsets.UTF_8));
             }
             content.setValue(stringBuilder.toString());
@@ -123,13 +124,13 @@ class SendGridManager extends AbstractManager {
 
     private Mail createMailMessage(final LogEvent appendEvent) throws AddressException {
         final Mail message = new SendGridMessageBuilder()
-            .setFrom(data.from)
-            .setReplyTo(data.replyTo)
-            .setRecipients(Message.RecipientType.TO, data.to)
-            .setRecipients(Message.RecipientType.CC, data.cc)
-            .setRecipients(Message.RecipientType.BCC, data.bcc)
-            .setSubject(data.subject.toSerializable(appendEvent)).build();
-        if (data.sandboxMode){
+                .setFrom(data.from)
+                .setReplyTo(data.replyTo)
+                .setRecipients(Message.RecipientType.TO, data.to)
+                .setRecipients(Message.RecipientType.CC, data.cc)
+                .setRecipients(Message.RecipientType.BCC, data.bcc)
+                .setSubject(data.subject.toSerializable(appendEvent)).build();
+        if (data.sandboxMode) {
             message.setMailSettings(SANDBOX_MAIL_SETTINGS);
         }
         return message;
