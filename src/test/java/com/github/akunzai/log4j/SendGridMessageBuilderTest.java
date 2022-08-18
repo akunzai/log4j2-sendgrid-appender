@@ -1,5 +1,6 @@
 package com.github.akunzai.log4j;
 
+import com.sendgrid.helpers.mail.objects.Email;
 import org.junit.jupiter.api.Test;
 
 import javax.mail.Message;
@@ -28,6 +29,18 @@ public class SendGridMessageBuilderTest {
 
         builder.setFrom(address);
         assertEquals(address, builder.build().getFrom().getEmail());
+    }
+
+    @Test
+    public void testMessageBuilderSetFromWithName() throws AddressException {
+        final SendGridMessageBuilder builder = new SendGridMessageBuilder();
+        final InternetAddress address = new InternetAddress("Name <testing@example.com>");
+
+        builder.setFrom(address.toString());
+
+        final Email from = builder.build().getFrom();
+        assertEquals(address.getPersonal(), from.getName());
+        assertEquals(address.getAddress(), from.getEmail());
     }
 
     @Test
