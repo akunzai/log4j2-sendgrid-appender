@@ -1,11 +1,10 @@
 package com.github.akunzai.log4j;
 
 import com.sendgrid.helpers.mail.objects.Email;
+import jakarta.mail.Message;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import org.junit.jupiter.api.Test;
-
-import javax.mail.Message;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
