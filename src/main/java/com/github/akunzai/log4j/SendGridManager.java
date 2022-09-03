@@ -1,10 +1,14 @@
 package com.github.akunzai.log4j;
 
-import com.sendgrid.*;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.MailSettings;
 import com.sendgrid.helpers.mail.objects.Setting;
+import jakarta.mail.Message;
+import jakarta.mail.internet.AddressException;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -20,8 +24,6 @@ import org.apache.logging.log4j.core.util.CyclicBuffer;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.message.ReusableMessage;
 
-import javax.mail.Message;
-import javax.mail.internet.AddressException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
