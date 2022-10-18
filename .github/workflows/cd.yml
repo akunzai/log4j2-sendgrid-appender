@@ -9,9 +9,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 10
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Set up JDK
         uses: actions/setup-java@v3
