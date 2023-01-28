@@ -27,7 +27,7 @@ Send [log4j2](https://logging.apache.org/log4j/2.x/) errors via [SendGrid](https
 
 ```groovy
 dependencies {
-    implementation 'com.github.akunzai:log4j2-sendgrid-appender:2.3.0'
+    implementation 'com.github.akunzai:log4j2-sendgrid-appender:2.3.1'
 }
 ```
 
@@ -37,7 +37,7 @@ dependencies {
 <dependency>
     <groupId>com.github.akunzai</groupId>
     <artifactId>log4j2-sendgrid-appender</artifactId>
-    <version>2.3.0</version>
+    <version>2.3.1</version>
 </dependency>
 ```
 
