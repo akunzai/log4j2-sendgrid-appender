@@ -4,6 +4,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -16,7 +17,7 @@ public class SendGridTestRunner {
     public static void main(String[] args) throws InterruptedException {
         for (int i = 0; i < 512; i++) {
             final Level level = LEVELS[RANDOM.nextInt(LEVELS.length)];
-            LOGGER.log(level, level.toString().toLowerCase());
+            LOGGER.log(level, level.toString().toLowerCase(Locale.ENGLISH));
             Thread.sleep(ThreadLocalRandom.current().nextInt(100, 10000));
         }
     }

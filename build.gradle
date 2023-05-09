@@ -26,7 +26,7 @@ dependencies {
     testImplementation 'com.sun.mail:javax.mail:1.6.2' // required for log4j2 SMTPAppender
     spotbugs 'com.github.spotbugs:spotbugs:4.7.3'
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
-    errorprone 'com.google.errorprone:error_prone_core:2.18.0'
+    errorprone 'com.google.errorprone:error_prone_core:2.19.0'
 
     constraints {
         implementation('com.fasterxml.jackson.core:jackson-databind:2.13.5') {
@@ -49,6 +49,9 @@ tasks.withType(JavaCompile).configureEach {
     // Error Prone require JDK 11 since version 2.11
     // https://github.com/google/error-prone/releases/tag/v2.11.0
     options.errorprone.enabled = JavaVersion.current().isJava11Compatible()
+    // Workaround to compiling with JDK 11 by disable the HidingField check
+    // https://github.com/google/error-prone/issues/2092
+    options.errorprone.errorproneArgs.addAll("-Xep:HidingField:OFF")
 }
 
 test {
