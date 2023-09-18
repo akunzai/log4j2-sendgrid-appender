@@ -37,6 +37,6 @@ jobs:
           chmod +x ./gradlew
           ./gradlew build
 
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v3
         with:
           name: unittests-${{ matrix.java }}
