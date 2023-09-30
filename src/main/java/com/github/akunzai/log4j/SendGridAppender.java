@@ -289,6 +289,7 @@ public class SendGridAppender extends AbstractAppender {
      * @see Builder
      * @deprecated Use {@link #newBuilder()} to create and configure a {@link SendGridAppender.Builder} instance.
      */
+    @Deprecated
     public static SendGridAppender createAppender(@PluginConfiguration final Configuration config,
                                                   @PluginAttribute("name") @Required final String name,
                                                   @PluginAttribute("to") final String to,

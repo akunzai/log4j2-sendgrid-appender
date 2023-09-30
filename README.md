@@ -18,7 +18,7 @@ Send [log4j2](https://logging.apache.org/log4j/2.x/) errors via [SendGrid](https
 
 ## Requirements
 
-- Java 8 runtime environments
+- Java 11 runtime
 - a SendGrid account with your [API key](https://app.sendgrid.com/settings/api_keys)
 
 ## Installation
