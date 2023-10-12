@@ -6,6 +6,6 @@
         <Class name="~.*\.*Test.*"/>
     </Match>
     <Match>
-        <Bug pattern="EI_EXPOSE_REP"/>
+        <Bug pattern="EI_EXPOSE_REP,PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES"/>
     </Match>
 </FindBugsFilter>
