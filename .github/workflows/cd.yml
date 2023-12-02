@@ -5,7 +5,8 @@ on:
     tags:
       - 'v*'
 
-permissions: read-all
+permissions: 
+  contents: write
 
 jobs:
   deploy:
@@ -13,14 +14,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 11
           cache: 'gradle'
-
       - name: Publish package to the Maven Central Repository
         env:
           SONATYPE_USER: ${{ secrets.SONATYPE_USER }}
@@ -33,3 +32,14 @@ jobs:
           -Psigning.password=${{ secrets.GPG_PASSPHRASE }} \
           -Psigning.secretKeyRingFile=$RUNNER_TEMP/secring.gpg \
           publish
+      - name: Pre-release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/') && (contains(github.ref,'dev') || contains(github.ref,'beta') || contains(github.ref,'alpha') || contains(github.ref,'rc'))
+        with:
+          prerelease: true
+          generate_release_notes: true
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/') && !(contains(github.ref,'dev') || contains(github.ref,'beta') || contains(github.ref,'alpha') || contains(github.ref,'rc'))
+        with:
+          generate_release_notes: true
