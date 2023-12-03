@@ -10,7 +10,9 @@ plugins {
 group 'com.github.akunzai'
 version '3.0.0'
 
-sourceCompatibility = JavaVersion.VERSION_11
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+}
 
 repositories {
     mavenCentral()
