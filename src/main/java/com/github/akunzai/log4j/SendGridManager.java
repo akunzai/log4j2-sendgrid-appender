@@ -14,24 +14,23 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
-import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
-import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.message.ReusableMessage;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Function;
+
+import static org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
 
 /**
  * Manager for sending SendGrid events.
  */
 class SendGridManager extends AbstractManager {
-    private static final SendGridManagerFactory FACTORY = new SendGridManagerFactory();
+    static final SendGridManagerFactory FACTORY = new SendGridManagerFactory();
     private static final MailSettings SANDBOX_MAIL_SETTINGS;
 
     static {
@@ -51,29 +50,10 @@ class SendGridManager extends AbstractManager {
         super(null, name);
         this.sendGrid = sendGrid;
         this.data = data;
-        this.buffer = new CyclicBuffer<>(LogEvent.class, data.numElements);
+        this.buffer = new CyclicBuffer<>(LogEvent.class, data.bufferSize);
     }
 
-    static SendGridManager getSendGridManager(final Configuration config,
-                                              final String to, final String cc, final String bcc,
-                                              final String from, final String replyTo,
-                                              final String subject, final String host,
-                                              final String apiKey,
-                                              final boolean sandboxMode,
-                                              final int numElements,
-                                              final ManagerFactory<SendGridManager, FactoryData> factory
-    ) {
-        final String name = "SendGrid:" + NameUtil.md5(host + ':' + apiKey);
-        final AbstractStringLayout.Serializer subjectSerializer = PatternLayout.newSerializerBuilder()
-                .setConfiguration(config)
-                .setPattern(subject)
-                .build();
-
-        return getManager(name, factory == null ? FACTORY : factory, new FactoryData(to, cc, bcc, from, replyTo,
-                subjectSerializer, host, apiKey, sandboxMode, numElements));
-    }
-
-    void add(LogEvent event) {
+    public void add(LogEvent event) {
         if (event instanceof Log4jLogEvent && event.getMessage() instanceof ReusableMessage) {
             ((Log4jLogEvent) event).makeMessageImmutable();
         } else if (event instanceof MutableLogEvent) {
@@ -88,9 +68,9 @@ class SendGridManager extends AbstractManager {
      * @param layout      The layout for formatting the events.
      * @param appendEvent The event that triggered to send.
      */
-    void sendEvents(final Layout<?> layout, final LogEvent appendEvent) {
+    public void sendEvents(final Layout<?> layout, final LogEvent appendEvent) {
         try {
-            final Mail message = createMailMessage(appendEvent);
+            final Mail message = createMailMessage(data, appendEvent);
             final Content content = new Content();
             if (layout instanceof HtmlLayout) {
                 content.setType("text/html");
@@ -124,14 +104,14 @@ class SendGridManager extends AbstractManager {
         }
     }
 
-    private Mail createMailMessage(final LogEvent appendEvent) throws AddressException {
+    private static Mail createMailMessage(final FactoryData data, final LogEvent appendEvent) throws AddressException {
         final Mail message = new SendGridMessageBuilder()
                 .setFrom(data.from)
                 .setReplyTo(data.replyTo)
                 .setRecipients(Message.RecipientType.TO, data.to)
                 .setRecipients(Message.RecipientType.CC, data.cc)
                 .setRecipients(Message.RecipientType.BCC, data.bcc)
-                .setSubject(data.subject.toSerializable(appendEvent)).build();
+                .setSubject(data.subjectSerializer.toSerializable(appendEvent)).build();
         if (data.sandboxMode) {
             message.setMailSettings(SANDBOX_MAIL_SETTINGS);
         }
@@ -147,11 +127,14 @@ class SendGridManager extends AbstractManager {
         final String bcc;
         final String from;
         final String replyTo;
-        final AbstractStringLayout.Serializer subject;
+        final String subject;
+        final Serializer subjectSerializer;
         final String host;
         final String apiKey;
         final boolean sandboxMode;
-        final int numElements;
+        final int bufferSize;
+        final String managerName;
+
 
         FactoryData(
                 final String to,
@@ -159,28 +142,83 @@ class SendGridManager extends AbstractManager {
                 final String bcc,
                 final String from,
                 final String replyTo,
-                final AbstractStringLayout.Serializer subject,
+                final String subject,
+                final Serializer subjectSerializer,
                 final String host,
                 final String apiKey,
                 final boolean sandboxMode,
-                final int numElements) {
+                final int bufferSize) {
             this.to = to;
             this.cc = cc;
             this.bcc = bcc;
             this.from = from;
             this.replyTo = replyTo;
             this.subject = subject;
+            this.subjectSerializer = subjectSerializer;
             this.host = host;
             this.apiKey = apiKey;
             this.sandboxMode = sandboxMode;
-            this.numElements = numElements;
+            this.bufferSize = bufferSize;
+            this.managerName = createManagerName(to, cc, bcc, from, replyTo, subject, host, apiKey, sandboxMode);
         }
     }
 
+    private static String createManagerName(
+            final String to,
+            final String cc,
+            final String bcc,
+            final String from,
+            final String replyTo,
+            final String subject,
+            final String host,
+            final String apiKey,
+            final boolean sandboxMode) {
+        final StringBuilder sb = new StringBuilder();
+        if (to != null) {
+            sb.append(to);
+        }
+        sb.append(':');
+        if (cc != null) {
+            sb.append(cc);
+        }
+        sb.append(':');
+        if (bcc != null) {
+            sb.append(bcc);
+        }
+        sb.append(':');
+        if (from != null) {
+            sb.append(from);
+        }
+        sb.append(':');
+        if (replyTo != null) {
+            sb.append(replyTo);
+        }
+        sb.append(':');
+        if (subject != null) {
+            sb.append(subject);
+        }
+        sb.append(':');
+        sb.append(host).append(':').append(apiKey);
+        sb.append(sandboxMode ? ":sandbox:" : "::");
+        return "SendGrid:" + sb;
+    }
+
     static class SendGridManagerFactory implements ManagerFactory<SendGridManager, FactoryData> {
+
+        private Function<String,SendGrid> sendGridFactory = SendGrid::new;
+
+        /**
+         * Set the SendGrid factory for testing
+         *
+         * @param sendGridFactory the SendGrid factory
+         */
+        public void setSendGridFactory(Function<String,SendGrid> sendGridFactory) {
+            this.sendGridFactory = sendGridFactory;
+        }
+
         @Override
         public SendGridManager createManager(final String name, final FactoryData data) {
-            final SendGrid sendGrid = new SendGrid(data.apiKey);
+            final SendGrid sendGrid = sendGridFactory.apply(data.apiKey);
             if (data.host != null && !data.host.isEmpty()) {
                 sendGrid.setHost(data.host);
             }
