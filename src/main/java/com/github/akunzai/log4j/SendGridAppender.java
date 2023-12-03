@@ -1,18 +1,36 @@
 package com.github.akunzai.log4j;
 
-import org.apache.logging.log4j.core.*;
+import com.github.akunzai.log4j.SendGridManager.FactoryData;
+import com.github.akunzai.log4j.SendGridManager.SendGridManagerFactory;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.*;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
+
+import static org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
 
 /**
  * Send an e-mail when a specific logging event occurs, typically on errors or fatal errors.
@@ -37,20 +55,27 @@ public class SendGridAppender extends AbstractAppender {
     /**
      * The SendGrid Manager
      */
-    final SendGridManager manager;
+    private final SendGridManager manager;
 
     private static final int DEFAULT_BUFFER_SIZE = 512;
 
-    private SendGridAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-                             final SendGridManager manager,
-                             final boolean ignoreExceptions,
-                             final Property[] properties) {
+    private SendGridAppender(
+            final String name, final Filter filter, final Layout<? extends Serializable> layout,
+            final SendGridManager manager,
+            final boolean ignoreExceptions,
+            final Property[] properties) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }
 
+    SendGridManager getManager() {
+        return manager;
+    }
+
     /**
      * The Plugin Builder for SendGridAppender
+     *
+     * @since 2.13.2
      */
     public static class Builder extends AbstractAppender.Builder<Builder>
             implements org.apache.logging.log4j.core.util.Builder<SendGridAppender> {
@@ -83,8 +108,6 @@ public class SendGridAppender extends AbstractAppender {
 
         @PluginBuilderAttribute
         private int bufferSize = DEFAULT_BUFFER_SIZE;
-
-        private ManagerFactory<SendGridManager, SendGridManager.FactoryData> factory;
 
         /**
          * The Plugin Builder for SendGridAppender
@@ -152,7 +175,6 @@ public class SendGridAppender extends AbstractAppender {
          *
          * @param subject Subject template for the email messages.
          * @return Builder
-         * @see org.apache.logging.log4j.core.layout.PatternLayout
          */
         public Builder setSubject(final String subject) {
             this.subject = subject;
@@ -189,17 +211,6 @@ public class SendGridAppender extends AbstractAppender {
          */
         public Builder setSandboxMode(final boolean sandboxMode) {
             this.sandboxMode = sandboxMode;
-            return this;
-        }
-
-        /**
-         * Set the customized SendGridManager factory for testing
-         *
-         * @param factory The SendGridManager factory
-         * @return Builder
-         */
-        public Builder setFactory(final ManagerFactory<SendGridManager, SendGridManager.FactoryData> factory) {
-            this.factory = factory;
             return this;
         }
 
@@ -244,11 +255,34 @@ public class SendGridAppender extends AbstractAppender {
             if (getFilter() == null) {
                 setFilter(ThresholdFilter.createFilter(null, null, null));
             }
-            final Configuration configuration = getConfiguration();
-            final SendGridManager manager = SendGridManager.getSendGridManager(
-                    configuration, to, cc, bcc, from, replyTo, subject, host, apiKey, sandboxMode,
-                    bufferSize, factory);
-            return new SendGridAppender(getName(),
+            final Serializer subjectSerializer = PatternLayout.newSerializerBuilder()
+                    .setConfiguration(getConfiguration())
+                    .setPattern(subject)
+                    .build();
+            final FactoryData data = new FactoryData(
+                    to,
+                    cc,
+                    bcc,
+                    from,
+                    replyTo,
+                    subject,
+                    subjectSerializer,
+                    host,
+                    apiKey,
+                    sandboxMode,
+                    bufferSize
+            );
+            final ManagerFactory<SendGridManager, FactoryData> factory = ServiceLoaderUtil.loadServices(
+                            SendGridManagerFactory.class, MethodHandles.lookup())
+                    .findAny()
+                    .orElse(SendGridManager.FACTORY);
+            final SendGridManager manager = AbstractManager.getManager(data.managerName, factory, data);
+            if (manager == null) {
+                LOGGER.error("Unable to instantiate SendGridAppender named {}", getName());
+                return null;
+            }
+            return new SendGridAppender(
+                    getName(),
                     getFilter(),
                     getLayout(),
                     manager,
@@ -290,43 +324,42 @@ public class SendGridAppender extends AbstractAppender {
      * @deprecated Use {@link #newBuilder()} to create and configure a {@link SendGridAppender.Builder} instance.
      */
     @Deprecated
-    public static SendGridAppender createAppender(@PluginConfiguration final Configuration config,
-                                                  @PluginAttribute("name") @Required final String name,
-                                                  @PluginAttribute("to") final String to,
-                                                  @PluginAttribute("cc") final String cc,
-                                                  @PluginAttribute("bcc") final String bcc,
-                                                  @PluginAttribute("from") final String from,
-                                                  @PluginAttribute("replyTo") final String replyTo,
-                                                  @PluginAttribute("subject") final String subject,
-                                                  @PluginAttribute("host") final String host,
-                                                  @PluginAttribute(value = "apiKey", sensitive = true) final String apiKey,
-                                                  @PluginAttribute("sandboxMode") final String sandboxMode,
-                                                  @PluginAttribute("bufferSize") final String bufferSize,
-                                                  @PluginElement("Layout") Layout<? extends Serializable> layout,
-                                                  @PluginElement("Filter") Filter filter,
-                                                  @PluginAttribute("ignoreExceptions") final String ignore) {
+    public static SendGridAppender createAppender(
+            @PluginConfiguration final Configuration config,
+            @PluginAttribute("name") @Required final String name,
+            @PluginAttribute("to") final String to,
+            @PluginAttribute("cc") final String cc,
+            @PluginAttribute("bcc") final String bcc,
+            @PluginAttribute("from") final String from,
+            @PluginAttribute("replyTo") final String replyTo,
+            @PluginAttribute("subject") final String subject,
+            @PluginAttribute("host") final String host,
+            @PluginAttribute(value = "apiKey", sensitive = true) final String apiKey,
+            @PluginAttribute("sandboxMode") final String sandboxMode,
+            @PluginAttribute("bufferSize") final String bufferSize,
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Filter") Filter filter,
+            @PluginAttribute("ignoreExceptions") final String ignore) {
         if (name == null || name.isEmpty()) {
             LOGGER.error("No name provided for SendGridAppender");
             return null;
         }
-        if (layout == null) {
-            layout = HtmlLayout.createDefaultLayout();
-        }
-        if (filter == null) {
-            filter = ThresholdFilter.createFilter(null, null, null);
-        }
-
-        final Configuration configuration = config != null ? config : new DefaultConfiguration();
-        final SendGridManager manager = SendGridManager.getSendGridManager(
-                configuration, to, cc, bcc, from, replyTo, subject, host, apiKey, Boolean.parseBoolean(sandboxMode),
-                bufferSize == null ? DEFAULT_BUFFER_SIZE : Integer.parseInt(bufferSize), null);
-
-        if (manager == null) {
-            return null;
-        }
-
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        return new SendGridAppender(name, filter, layout, manager, ignoreExceptions, null);
+        return SendGridAppender.newBuilder()
+                .setTo(to)
+                .setBcc(cc)
+                .setBcc(bcc)
+                .setFrom(from)
+                .setReplyTo(replyTo)
+                .setSubject(subject)
+                .setIgnoreExceptions(Booleans.parseBoolean(ignore, true))
+                .setHost(host)
+                .setApiKey(apiKey)
+                .setSandboxMode(Boolean.parseBoolean(sandboxMode))
+                .setBufferSize(bufferSize == null ? DEFAULT_BUFFER_SIZE : Integers.parseInt(bufferSize))
+                .setLayout(layout)
+                .setFilter(filter)
+                .setConfiguration(config != null ? config : new DefaultConfiguration())
+                .build();
     }
 
     /**
