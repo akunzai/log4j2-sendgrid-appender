@@ -2,16 +2,11 @@
 
 [![Build Status][build-badge]][build] [![Code Coverage][codecov-badge]][codecov] [![Download][maven-badge]][maven]
 
-[build]: https://github.com/akunzai/log4j2-sendgrid-appender/actions?query=workflow%3ABuild
-
-[build-badge]: https://github.com/akunzai/log4j2-sendgrid-appender/workflows/Build/badge.svg
-
+[build]: https://github.com/akunzai/log4j2-sendgrid-appender/actions/workflows/build.yml
+[build-badge]: https://github.com/akunzai/log4j2-sendgrid-appender/actions/workflows/build.yml/badge.svg
 [codecov]: https://codecov.io/gh/akunzai/log4j2-sendgrid-appender
-
 [codecov-badge]: https://codecov.io/gh/akunzai/log4j2-sendgrid-appender/branch/main/graph/badge.svg?token=RDIFA6DTUZ
-
 [maven]: https://search.maven.org/artifact/com.github.akunzai/log4j2-sendgrid-appender
-
 [maven-badge]: https://img.shields.io/maven-central/v/com.github.akunzai/log4j2-sendgrid-appender.svg
 
 Send [log4j2](https://logging.apache.org/log4j/2.x/) errors via [SendGrid](https://sendgrid.com) service
