@@ -1,10 +1,10 @@
 # log4j2-sendgrid-appender
 
-[![Build Status][ci-badge]][ci] [![Code Coverage][codecov-badge]][codecov] [![Download][maven-badge]][maven]
+[![Build Status][build-badge]][build] [![Code Coverage][codecov-badge]][codecov] [![Download][maven-badge]][maven]
 
-[ci]: https://github.com/akunzai/log4j2-sendgrid-appender/actions?query=workflow%3ACI
+[build]: https://github.com/akunzai/log4j2-sendgrid-appender/actions?query=workflow%3ABuild
 
-[ci-badge]: https://github.com/akunzai/log4j2-sendgrid-appender/workflows/CI/badge.svg
+[build-badge]: https://github.com/akunzai/log4j2-sendgrid-appender/workflows/Build/badge.svg
 
 [codecov]: https://codecov.io/gh/akunzai/log4j2-sendgrid-appender
 

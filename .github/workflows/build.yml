@@ -1,4 +1,4 @@
-name: CI
+name: Build
 
 on:
   push:
@@ -19,25 +19,22 @@ jobs:
           - 17
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 10
-
+          fetch-depth: 0
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           cache: 'gradle'
-
       - name: Build with Gradle
         run: |
           chmod +x ./gradlew
           ./gradlew build
-
       - uses: codecov/codecov-action@v4
         with:
-          name: unittests-${{ matrix.java }}
+          name: jacoco-${{ matrix.java }}
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
