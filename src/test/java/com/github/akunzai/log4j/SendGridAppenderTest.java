@@ -60,6 +60,7 @@ public class SendGridAppenderTest {
             logger.debug("Debug message #4");
             logger.error("Error with exception", new RuntimeException("Exception message"));
             logger.error("Error message #2");
+            @SuppressWarnings("resource")
             final MockSendGrid sendGrid = (MockSendGrid) appender.getManager().sendGrid;
             assertEquals(2, sendGrid.getRequests().size());
             final ObjectMapper mapper = new ObjectMapper();
