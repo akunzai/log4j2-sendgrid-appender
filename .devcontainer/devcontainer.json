@@ -1,0 +1,29 @@
+// https://aka.ms/devcontainer.json
+{
+	"name": "Java",
+	// https://github.com/devcontainers/images/tree/main/src/java
+	"image": "mcr.microsoft.com/devcontainers/java:17",
+	"workspaceFolder": "/workspace",
+	// https://code.visualstudio.com/remote/advancedcontainers/improve-performance
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+	"mounts": [
+		"source=${localWorkspaceFolderBasename}-gradle,target=/home/vscode/.gradle,type=volume"
+	],
+	// https://containers.dev/features
+	"features": {
+		"ghcr.io/devcontainers/features/java:1": {
+			"version": "none",
+			"installMaven": "false",
+			"installGradle": "true"
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"mhutchie.git-graph"
+			]
+		}
+	},
+	"postCreateCommand": "sudo chown -R vscode:vscode ~/.gradle; git config --global --add safe.directory ${containerWorkspaceFolder}",
+	"postAttachCommand": "java -version"
+}
