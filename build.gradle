@@ -32,7 +32,7 @@ dependencies {
     errorprone 'com.google.errorprone:error_prone_core:2.29.2'
 
     constraints {
-        implementation('com.fasterxml.jackson.core:jackson-databind:2.17.1') {
+        implementation('com.fasterxml.jackson.core:jackson-databind:2.17.2') {
             // Use the latest version whenever possible
             because 'previous versions have known security vulnerabilities'
         }
