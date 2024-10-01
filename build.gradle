@@ -4,7 +4,6 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'com.github.spotbugs' version '6.0.23'
-    id 'net.ltgt.errorprone' version '4.0.1'
 }
 
 group 'com.github.akunzai'
@@ -29,7 +28,6 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     spotbugs 'com.github.spotbugs:spotbugs:4.8.6'
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
-    errorprone 'com.google.errorprone:error_prone_core:2.31.0'
 
     constraints {
         implementation('com.fasterxml.jackson.core:jackson-databind:2.18.0') {
@@ -46,15 +44,6 @@ dependencies {
 java {
     withJavadocJar()
     withSourcesJar()
-}
-
-tasks.withType(JavaCompile).configureEach {
-    // Error Prone require JDK 11 since version 2.11
-    // https://github.com/google/error-prone/releases/tag/v2.11.0
-    options.errorprone.enabled = JavaVersion.current().isJava11Compatible()
-    // Workaround to compiling with JDK 11 by disable the HidingField check
-    // https://github.com/google/error-prone/issues/2092
-    options.errorprone.errorproneArgs.addAll("-Xep:HidingField:OFF")
 }
 
 test {
