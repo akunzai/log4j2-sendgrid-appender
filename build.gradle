@@ -29,7 +29,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     spotbugs 'com.github.spotbugs:spotbugs:4.8.6'
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
-    errorprone 'com.google.errorprone:error_prone_core:2.31.0'
+    errorprone 'com.google.errorprone:error_prone_core:2.33.0'
 
     constraints {
         implementation('com.fasterxml.jackson.core:jackson-databind:2.18.0') {
