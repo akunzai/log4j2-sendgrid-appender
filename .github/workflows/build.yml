@@ -34,7 +34,7 @@ jobs:
         run: |
           chmod +x ./gradlew
           ./gradlew build
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           name: jacoco-${{ matrix.java }}
         env:
