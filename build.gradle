@@ -26,7 +26,7 @@ dependencies {
     testImplementation 'com.lmax:disruptor:4.0.0' // required for log4j2 AsyncLogger
     testImplementation 'com.sun.mail:javax.mail:1.6.2' // required for log4j2 SMTPAppender
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    spotbugs 'com.github.spotbugs:spotbugs:4.9.0'
+    spotbugs 'com.github.spotbugs:spotbugs:4.9.1'
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
 
     constraints {
