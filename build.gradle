@@ -27,7 +27,7 @@ dependencies {
     testImplementation 'com.sun.mail:javax.mail:1.6.2' // required for log4j2 SMTPAppender
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     spotbugs 'com.github.spotbugs:spotbugs:4.9.3'
-    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
 
     constraints {
         implementation('com.fasterxml.jackson.core:jackson-databind:2.19.0') {
