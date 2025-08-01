@@ -3,7 +3,7 @@ plugins {
     jacoco
     `maven-publish`
     signing
-    id("com.github.spotbugs") version "6.2.1"
+    id("com.github.spotbugs") version "6.2.2"
 }
 
 group = "com.github.akunzai"
