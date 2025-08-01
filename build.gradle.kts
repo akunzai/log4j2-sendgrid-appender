@@ -33,7 +33,7 @@ dependencies {
         implementation("com.fasterxml.jackson.core:jackson-databind:2.19.1") {
             because("previous versions have known security vulnerabilities")
         }
-        implementation("commons-codec:commons-codec:1.17.2") {
+        implementation("commons-codec:commons-codec:1.19.0") {
             because("previous versions have known security vulnerabilities")
         }
     }
