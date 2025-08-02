@@ -15,7 +15,6 @@ jobs:
     strategy:
       matrix:
         java:
-          - 11
           - 17
           - 21
     runs-on: ubuntu-latest
@@ -28,7 +27,9 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: ${{ matrix.java }}
+          java-version: |
+            11
+            ${{ matrix.java }}
           cache: 'gradle'
       - name: Build with Gradle
         run: |

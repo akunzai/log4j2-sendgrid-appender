@@ -11,6 +11,9 @@ version = "3.1.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
 }
 
 repositories {
