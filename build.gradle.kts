@@ -30,7 +30,7 @@ dependencies {
     spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
 
     constraints {
-        implementation("com.fasterxml.jackson.core:jackson-databind:2.19.1") {
+        implementation("com.fasterxml.jackson.core:jackson-databind:2.19.2") {
             because("previous versions have known security vulnerabilities")
         }
         implementation("commons-codec:commons-codec:1.19.0") {
