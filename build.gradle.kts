@@ -3,7 +3,7 @@ plugins {
     jacoco
     `maven-publish`
     signing
-    id("com.github.spotbugs") version "6.2.2"
+    alias(libs.plugins.spotbugs)
 }
 
 group = "com.github.akunzai"
@@ -21,22 +21,22 @@ repositories {
 }
 
 dependencies {
-    implementation("com.sendgrid:sendgrid-java:4.10.1")
-    implementation("jakarta.mail:jakarta.mail-api:2.1.3")
-    implementation("org.apache.logging.log4j:log4j-core:2.23.0")
-    annotationProcessor("org.apache.logging.log4j:log4j-core:2.23.0")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
-    testImplementation("com.lmax:disruptor:4.0.0") // required for log4j2 AsyncLogger
-    testImplementation("com.sun.mail:javax.mail:1.6.2") // required for log4j2 SMTPAppender
+    implementation(libs.sendgrid.java)
+    implementation(libs.jakarta.mail.api)
+    implementation(libs.log4j.core)
+    annotationProcessor(libs.log4j.core)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.disruptor) // required for log4j2 AsyncLogger
+    testImplementation(libs.javax.mail) // required for log4j2 SMTPAppender
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    spotbugs("com.github.spotbugs:spotbugs:4.9.3")
-    spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
+    spotbugs(libs.spotbugs.plugin)
+    spotbugsPlugins(libs.findsecbugs.plugin)
 
     constraints {
-        implementation("com.fasterxml.jackson.core:jackson-databind:2.19.2") {
+        implementation(libs.jackson.databind) {
             because("previous versions have known security vulnerabilities")
         }
-        implementation("commons-codec:commons-codec:1.19.0") {
+        implementation(libs.commons.codec) {
             because("previous versions have known security vulnerabilities")
         }
     }
