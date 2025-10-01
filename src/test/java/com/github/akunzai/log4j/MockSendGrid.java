@@ -17,10 +17,11 @@ public class MockSendGrid extends SendGrid {
     @Override
     public Response makeCall(Request request) {
         requests.add(request);
-        Response response = new Response();
+        var response = new Response();
         response.setStatusCode(200);
-        response.setBody("{\"message\":\"success\"}");
-        Map<String, String> headers = new HashMap<>();
+        response.setBody("""
+                {"message":"success"}""");
+        var headers = new HashMap<String, String>();
         // https://sendgrid.com/docs/glossary/x-message-id/
         headers.put("X-Message-ID", UUID.randomUUID().toString());
         response.setHeaders(headers);

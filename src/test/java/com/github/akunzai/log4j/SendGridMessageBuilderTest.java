@@ -15,13 +15,13 @@ public class SendGridMessageBuilderTest {
 
     @Test
     public void testMessageBuilderSetFrom() throws AddressException {
-        final SendGridMessageBuilder builder = new SendGridMessageBuilder();
-        final String address = "testing@example.com";
+        var builder = new SendGridMessageBuilder();
+        var address = "testing@example.com";
 
         assertNull(builder.build().getFrom());
 
         builder.setFrom(null);
-        final InternetAddress localAddress = InternetAddress.getLocalAddress(null);
+        var localAddress = InternetAddress.getLocalAddress(null);
         if (localAddress != null) {
             assertEquals(localAddress.getAddress(), builder.setFrom(null).build().getFrom().getEmail());
         }
@@ -32,20 +32,20 @@ public class SendGridMessageBuilderTest {
 
     @Test
     public void testMessageBuilderSetFromWithName() throws AddressException {
-        final SendGridMessageBuilder builder = new SendGridMessageBuilder();
-        final InternetAddress address = new InternetAddress("Name <testing@example.com>");
+        var builder = new SendGridMessageBuilder();
+        var address = new InternetAddress("Name <testing@example.com>");
 
         builder.setFrom(address.toString());
 
-        final Email from = builder.build().getFrom();
+        var from = builder.build().getFrom();
         assertEquals(address.getPersonal(), from.getName());
         assertEquals(address.getAddress(), from.getEmail());
     }
 
     @Test
     public void testMessageBuilderSetReplyTo() throws AddressException {
-        final SendGridMessageBuilder builder = new SendGridMessageBuilder();
-        final String address = "testing@example.com";
+        var builder = new SendGridMessageBuilder();
+        var address = "testing@example.com";
 
         assertNull(builder.build().getReplyto());
 
@@ -58,8 +58,8 @@ public class SendGridMessageBuilderTest {
 
     @Test
     public void testMessageBuilderSetRecipients() throws AddressException {
-        final SendGridMessageBuilder builder = new SendGridMessageBuilder();
-        final String addresses = "testing1@example.com,testing2@example.com";
+        var builder = new SendGridMessageBuilder();
+        var addresses = "testing1@example.com,testing2@example.com";
 
         assertNull(builder.build().getPersonalization());
 
@@ -79,8 +79,8 @@ public class SendGridMessageBuilderTest {
 
     @Test
     public void testMessageBuilderSetSubject() {
-        final SendGridMessageBuilder builder = new SendGridMessageBuilder();
-        final String subject = "Test Subject";
+        var builder = new SendGridMessageBuilder();
+        var subject = "Test Subject";
 
         assertNull(builder.build().getSubject());
 
