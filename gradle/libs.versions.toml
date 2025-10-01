@@ -8,7 +8,7 @@ disruptor = "4.0.0"
 javaxMail = "1.6.2"
 spotbugsPlugin = "4.9.3"
 findsecbugs = "1.14.0"
-jackson = "2.19.2"
+jackson = "2.20.0"
 commonsCodec = "1.19.0"
 
 [libraries]
