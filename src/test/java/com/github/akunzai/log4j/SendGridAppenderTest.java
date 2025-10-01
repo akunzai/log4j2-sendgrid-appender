@@ -25,11 +25,11 @@ public class SendGridAppenderTest {
 
     @Test
     public void testDelivery() {
-        final String subjectKey = getClass().getName();
-        final String subjectValue = "SubjectValue1";
+        var subjectKey = getClass().getName();
+        var subjectValue = "SubjectValue1";
         ThreadContext.put(subjectKey, subjectValue);
         SendGridManager.FACTORY.setSendGridFactory(MockSendGrid::new);
-        final SendGridAppender appender = SendGridAppender.newBuilder()
+        var appender = SendGridAppender.newBuilder()
                 .setName("SendGrid")
                 .setTo("to@example.com")
                 .setCc("cc@example.com")
@@ -45,11 +45,11 @@ public class SendGridAppenderTest {
         assertNotNull(appender);
         appender.start();
 
-        try (LoggerContext context = Configurator.initialize(
+        try (var context = Configurator.initialize(
                 ConfigurationBuilderFactory.newConfigurationBuilder()
                         .setStatusLevel(Level.OFF)
                         .build())) {
-            final Logger logger = context.getLogger("SendGridAppenderTest");
+            var logger = context.getLogger("SendGridAppenderTest");
             logger.addAppender(appender);
             logger.setAdditive(false);
             logger.setLevel(Level.DEBUG);
@@ -61,18 +61,18 @@ public class SendGridAppenderTest {
             logger.error("Error with exception", new RuntimeException("Exception message"));
             logger.error("Error message #2");
             @SuppressWarnings("resource")
-            final MockSendGrid sendGrid = (MockSendGrid) appender.getManager().sendGrid;
+            var sendGrid = (MockSendGrid) appender.getManager().sendGrid;
             assertEquals(2, sendGrid.getRequests().size());
-            final ObjectMapper mapper = new ObjectMapper();
-            final Iterator<Mail> messages = sendGrid.getRequests().stream().map(req -> {
+            var mapper = new ObjectMapper();
+            var messages = sendGrid.getRequests().stream().map(req -> {
                 try {
                     return mapper.readValue(req.getBody(), Mail.class);
                 } catch (IOException e) {
                     throw new RuntimeException(e.getMessage(), e);
                 }
-            }).collect(Collectors.toList()).iterator();
-            final Mail message = messages.next();
-            final Personalization personalization = message.getPersonalization().get(0);
+            }).toList().iterator();
+            var message = messages.next();
+            var personalization = message.getPersonalization().get(0);
 
             assertEquals("to@example.com", personalization.getTos().get(0).getEmail());
             assertEquals("cc@example.com", personalization.getCcs().get(0).getEmail());
@@ -81,9 +81,9 @@ public class SendGridAppenderTest {
             assertEquals("replyTo@example.com", message.getReplyto().getEmail());
             assertEquals("Subject Pattern " + subjectValue, message.getSubject());
 
-            final Content content = message.getContent().get(0);
+            var content = message.getContent().get(0);
             assertEquals("text/html", content.getType());
-            final String body = content.getValue();
+            var body = content.getValue();
             assertFalse(body.contains("Debug message #1"));
             assertTrue(body.contains("Debug message #2"));
             assertTrue(body.contains("Debug message #3"));
@@ -93,8 +93,8 @@ public class SendGridAppenderTest {
             assertTrue(body.contains("Exception message"));
             assertFalse(body.contains("Error message #2"));
 
-            final Mail message2 = messages.next();
-            final String body2 = message2.getContent().get(0).getValue();
+            var message2 = messages.next();
+            var body2 = message2.getContent().get(0).getValue();
             assertFalse(body2.contains("Debug message #4"));
             assertFalse(body2.contains("Error with exception"));
             assertTrue(body2.contains("Error message #2"));

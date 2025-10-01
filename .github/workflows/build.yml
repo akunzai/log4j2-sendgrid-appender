@@ -28,14 +28,24 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
-          java-version: |
-            11
-            ${{ matrix.java }}
+          java-version: ${{ matrix.java }}
           cache: 'gradle'
       - name: Build with Gradle
         run: |
           chmod +x ./gradlew
           ./gradlew build
+      - name: Verify Java 11 compatibility
+        run: |
+          # Check main classes are compiled to Java 11 bytecode (version 55)
+          MAIN_CLASS=$(find build/classes/java/main -name "*.class" | head -1)
+          if [ -f "$MAIN_CLASS" ]; then
+            VERSION=$(javap -v "$MAIN_CLASS" | grep "major version" | awk '{print $3}')
+            if [ "$VERSION" != "55" ]; then
+              echo "Error: Main classes compiled to version $VERSION, expected 55 (Java 11)"
+              exit 1
+            fi
+            echo "✓ Main classes are Java 11 compatible (bytecode version 55)"
+          fi
       - uses: codecov/codecov-action@v5
         with:
           name: jacoco-${{ matrix.java }}

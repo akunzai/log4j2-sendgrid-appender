@@ -11,8 +11,9 @@ version = "3.1.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -45,6 +46,13 @@ dependencies {
 java {
     withJavadocJar()
     withSourcesJar()
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    if (name.contains("Test")) {
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
+    }
 }
 
 tasks.test {
