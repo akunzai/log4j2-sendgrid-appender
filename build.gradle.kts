@@ -15,6 +15,8 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+    withJavadocJar()
+    withSourcesJar()
 }
 
 repositories {
@@ -40,35 +42,6 @@ dependencies {
         implementation(libs.commons.codec) {
             because("previous versions have known security vulnerabilities")
         }
-    }
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
-tasks.withType<JavaCompile>().configureEach {
-    if (name.contains("Test")) {
-        sourceCompatibility = "17"
-        targetCompatibility = "17"
-    }
-}
-
-tasks.test {
-    useJUnitPlatform()
-    finalizedBy(tasks.jacocoTestReport)
-}
-
-spotbugs {
-    excludeFilter.set(file("$projectDir/spotbugs-exclude.xml"))
-}
-
-tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
     }
 }
 
@@ -158,6 +131,30 @@ jreleaser {
                 configurationFile.set(".github/release.yml")
             }
         }
+    }
+}
+
+spotbugs {
+    excludeFilter.set(file("$projectDir/spotbugs-exclude.xml"))
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    if (name.contains("Test")) {
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
+    }
+}
+
+tasks.test {
+    useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
     }
 }
 
