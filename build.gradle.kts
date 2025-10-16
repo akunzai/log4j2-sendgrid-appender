@@ -2,12 +2,12 @@ plugins {
     `java-library`
     jacoco
     `maven-publish`
-    signing
     alias(libs.plugins.spotbugs)
+    alias(libs.plugins.jreleaser)
 }
 
 group = "com.github.akunzai"
-version = "3.1.0"
+version = "3.1.1"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -109,20 +109,56 @@ publishing {
     }
     repositories {
         maven {
-            name = "OSSRH"
-            val releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
-            val snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots"
-            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
-            credentials {
-                username = project.findProperty("sonatype.user")?.toString() ?: System.getenv("SONATYPE_USER")
-                password = project.findProperty("sonatype.token")?.toString() ?: System.getenv("SONATYPE_TOKEN")
-            }
+            url = layout.buildDirectory.dir("staging-deploy").get().asFile.toURI()
         }
     }
 }
 
-signing {
-    sign(publishing.publications["mavenJava"])
+jreleaser {
+    project {
+        description.set("Send log4j2 errors via SendGrid service")
+        copyright.set("2025 Charley Wu")
+        authors.add("Charley Wu")
+        license.set("Apache-2.0")
+        inceptionYear.set("2025")
+    }
+    signing {
+        setActive("ALWAYS")
+        armored.set(true)
+    }
+    deploy {
+        maven {
+            mavenCentral {
+                create("sonatype") {
+                    setActive("RELEASE")
+                    url.set("https://central.sonatype.com/api/v1/publisher")
+                    stagingRepository(layout.buildDirectory.dir("staging-deploy").get().asFile.path)
+                }
+            }
+            nexus2 {
+                create("maven-central-snapshots") {
+                    setActive("SNAPSHOT")
+                    snapshotUrl.set("https://central.sonatype.com/repository/maven-snapshots/")
+                    applyMavenCentralRules.set(true)
+                    closeRepository.set(true)
+                    releaseRepository.set(true)
+                    stagingRepository(layout.buildDirectory.dir("staging-deploy").get().asFile.path)
+                }
+            }
+        }
+    }
+    release {
+        github {
+            overwrite.set(true)
+            changelog {
+                enabled.set(false)
+            }
+            releaseNotes {
+                enabled.set(true)
+                configurationFile.set(".github/release.yml")
+            }
+        }
+    }
 }
 
 tasks.javadoc {
