@@ -1,5 +1,5 @@
 [versions]
-spotbugs = "6.4.4"
+spotbugs = "6.4.8"
 sendgrid = "4.10.1"
 jakartaMail = "2.1.5"
 log4j = "2.23.0"
