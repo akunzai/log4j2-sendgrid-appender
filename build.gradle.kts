@@ -1,3 +1,5 @@
+import org.jreleaser.model.Active
+
 plugins {
     `java-library`
     jacoco
@@ -96,8 +98,10 @@ jreleaser {
         inceptionYear.set("2025")
     }
     signing {
-        setActive("ALWAYS")
-        armored.set(true)
+        active.set(Active.ALWAYS)
+        pgp {
+            armored.set(true)
+        }
     }
     deploy {
         maven {
