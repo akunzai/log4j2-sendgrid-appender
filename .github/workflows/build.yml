@@ -46,7 +46,7 @@ jobs:
             fi
             echo "✓ Main classes are Java 11 compatible (bytecode version 55)"
           fi
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v6
         with:
           name: jacoco-${{ matrix.java }}
         env:
