@@ -111,7 +111,7 @@ class SendGridManager extends AbstractManager {
                 .setRecipients(Message.RecipientType.TO, data.to)
                 .setRecipients(Message.RecipientType.CC, data.cc)
                 .setRecipients(Message.RecipientType.BCC, data.bcc)
-                .setSubject(data.subjectSerializer.toSerializable(appendEvent)).build();
+                .setSubject(data.subjectSerializer != null ? data.subjectSerializer.toSerializable(appendEvent) : data.subject).build();
         if (data.sandboxMode) {
             message.setMailSettings(SANDBOX_MAIL_SETTINGS);
         }
