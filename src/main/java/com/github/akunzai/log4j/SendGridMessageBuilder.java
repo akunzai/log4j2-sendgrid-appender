@@ -114,7 +114,7 @@ public class SendGridMessageBuilder implements Builder<Mail> {
     }
 
     private static Email parseEmail(final String email) throws AddressException {
-        if (email == null || email.isEmpty()) return null;
+        if (email == null || email.isEmpty() || email.contains("${")) return null;
         final InternetAddress address = new InternetAddress(email);
         if (address.getPersonal() == null || address.getPersonal().isEmpty()) {
             return new Email(address.getAddress());
@@ -123,7 +123,7 @@ public class SendGridMessageBuilder implements Builder<Mail> {
     }
 
     private static Collection<Email> parseEmails(final String email) throws AddressException {
-        if (email == null || email.isEmpty()) return Collections.emptySet();
+        if (email == null || email.isEmpty() || email.contains("${")) return Collections.emptySet();
         final InternetAddress[] addresses = InternetAddress.parse(email, true);
         final List<Email> emails = new ArrayList<>();
         for (InternetAddress address : addresses) {

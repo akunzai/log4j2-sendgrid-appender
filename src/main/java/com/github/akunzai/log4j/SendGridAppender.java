@@ -25,10 +25,11 @@ import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
 import java.io.Serializable;
-import java.lang.invoke.MethodHandles;
+import java.util.ServiceLoader;
 
 import static org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
 
@@ -272,8 +273,10 @@ public class SendGridAppender extends AbstractAppender {
                     sandboxMode,
                     bufferSize
             );
-            final ManagerFactory<SendGridManager, FactoryData> factory = ServiceLoaderUtil.loadServices(
-                            SendGridManagerFactory.class, MethodHandles.lookup())
+            final ManagerFactory<SendGridManager, FactoryData> factory = ServiceLoaderUtil.safeStream(
+                            SendGridManagerFactory.class,
+                            ServiceLoader.load(SendGridManagerFactory.class, getClass().getClassLoader()),
+                            StatusLogger.getLogger())
                     .findAny()
                     .orElse(SendGridManager.FACTORY);
             final SendGridManager manager = AbstractManager.getManager(data.managerName, factory, data);
@@ -345,8 +348,9 @@ public class SendGridAppender extends AbstractAppender {
             return null;
         }
         return SendGridAppender.newBuilder()
+                .setName(name)
                 .setTo(to)
-                .setBcc(cc)
+                .setCc(cc)
                 .setBcc(bcc)
                 .setFrom(from)
                 .setReplyTo(replyTo)
