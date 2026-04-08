@@ -1,6 +1,5 @@
 package com.github.akunzai.log4j;
 
-import com.sendgrid.helpers.mail.objects.Email;
 import jakarta.mail.Message;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;

@@ -2,19 +2,13 @@ package com.github.akunzai.log4j;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.Content;
-import com.sendgrid.helpers.mail.objects.Personalization;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -60,7 +54,6 @@ public class SendGridAppenderTest {
             logger.debug("Debug message #4");
             logger.error("Error with exception", new RuntimeException("Exception message"));
             logger.error("Error message #2");
-            @SuppressWarnings("resource")
             var sendGrid = (MockSendGrid) appender.getManager().sendGrid;
             assertEquals(2, sendGrid.getRequests().size());
             var mapper = new ObjectMapper();
