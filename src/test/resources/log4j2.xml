@@ -46,7 +46,7 @@
     <Loggers>
         <Root level="INFO" includeLocation="true">
             <AppenderRef ref="Console"/>
-            <AppenderRef ref="SMTP"/>
+            <AppenderRef ref="SendGrid"/>
         </Root>
     </Loggers>
 </Configuration>
