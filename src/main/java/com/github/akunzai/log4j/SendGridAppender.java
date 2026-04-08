@@ -348,8 +348,9 @@ public class SendGridAppender extends AbstractAppender {
             return null;
         }
         return SendGridAppender.newBuilder()
+                .setName(name)
                 .setTo(to)
-                .setBcc(cc)
+                .setCc(cc)
                 .setBcc(bcc)
                 .setFrom(from)
                 .setReplyTo(replyTo)
