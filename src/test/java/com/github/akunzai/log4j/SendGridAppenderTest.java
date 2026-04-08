@@ -6,13 +6,18 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.core.layout.HtmlLayout;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SendGridAppenderTest {
@@ -91,6 +96,127 @@ public class SendGridAppenderTest {
             assertFalse(body2.contains("Debug message #4"));
             assertFalse(body2.contains("Error with exception"));
             assertTrue(body2.contains("Error message #2"));
+        }
+    }
+
+    @Test
+    public void testDefaultLayoutAndFilter() {
+        SendGridManager.FACTORY.setSendGridFactory(MockSendGrid::new);
+        var appender = SendGridAppender.newBuilder()
+                .setName("SendGrid")
+                .setTo("to@example.com")
+                .setFrom("from@example.com")
+                .setApiKey("apiKey-defaults")
+                .build();
+        assertNotNull(appender);
+        // Default layout is HtmlLayout when none is provided
+        assertInstanceOf(HtmlLayout.class, appender.getLayout());
+        // Default filter is ThresholdFilter when none is provided
+        assertInstanceOf(ThresholdFilter.class, appender.getFilter());
+    }
+
+    @Test
+    public void testPlainTextLayout() throws IOException {
+        SendGridManager.FACTORY.setSendGridFactory(MockSendGrid::new);
+        var appender = SendGridAppender.newBuilder()
+                .setName("SendGrid")
+                .setTo("to@example.com")
+                .setFrom("from@example.com")
+                .setApiKey("apiKey-plaintext")
+                .setLayout(PatternLayout.createDefaultLayout())
+                .setBufferSize(1)
+                .build();
+        assertNotNull(appender);
+        appender.start();
+
+        try (var context = Configurator.initialize(
+                ConfigurationBuilderFactory.newConfigurationBuilder()
+                        .setStatusLevel(Level.OFF)
+                        .build())) {
+            var logger = context.getLogger("testPlainTextLayout");
+            logger.addAppender(appender);
+            logger.setAdditive(false);
+            logger.setLevel(Level.ERROR);
+
+            logger.error("Plain text error");
+            var sendGrid = (MockSendGrid) appender.getManager().sendGrid;
+            assertEquals(1, sendGrid.getRequests().size());
+            var mail = new ObjectMapper().readValue(sendGrid.getRequests().get(0).getBody(), Mail.class);
+            assertEquals("text/plain", mail.getContent().get(0).getType());
+        }
+    }
+
+    @Test
+    public void testSandboxMode() throws IOException {
+        SendGridManager.FACTORY.setSendGridFactory(MockSendGrid::new);
+        var appender = SendGridAppender.newBuilder()
+                .setName("SendGrid")
+                .setTo("to@example.com")
+                .setFrom("from@example.com")
+                .setApiKey("apiKey-sandbox")
+                .setSandboxMode(true)
+                .setBufferSize(1)
+                .build();
+        assertNotNull(appender);
+        appender.start();
+
+        try (var context = Configurator.initialize(
+                ConfigurationBuilderFactory.newConfigurationBuilder()
+                        .setStatusLevel(Level.OFF)
+                        .build())) {
+            var logger = context.getLogger("testSandboxMode");
+            logger.addAppender(appender);
+            logger.setAdditive(false);
+            logger.setLevel(Level.ERROR);
+
+            logger.error("Sandbox error");
+            var sendGrid = (MockSendGrid) appender.getManager().sendGrid;
+            assertEquals(1, sendGrid.getRequests().size());
+            var mail = new ObjectMapper().readValue(sendGrid.getRequests().get(0).getBody(), Mail.class);
+            assertTrue(mail.getMailSettings().getSandBoxMode().getEnable());
+        }
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testCreateAppenderReturnsNullWithoutName() {
+        assertNull(SendGridAppender.createAppender(
+                null, null, "to@example.com", null, null,
+                "from@example.com", null, "Subject", null, "apiKey",
+                "false", null, null, null, "true"));
+        assertNull(SendGridAppender.createAppender(
+                null, "", "to@example.com", null, null,
+                "from@example.com", null, "Subject", null, "apiKey",
+                "false", null, null, null, "true"));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testCreateAppender() throws IOException {
+        SendGridManager.FACTORY.setSendGridFactory(MockSendGrid::new);
+        var appender = SendGridAppender.createAppender(
+                null, "SendGrid", "to@example.com", "cc@example.com", "bcc@example.com",
+                "from@example.com", null, "Subject", null, "apiKey-create",
+                "false", "1", null, null, "true");
+        assertNotNull(appender);
+        appender.start();
+
+        try (var context = Configurator.initialize(
+                ConfigurationBuilderFactory.newConfigurationBuilder()
+                        .setStatusLevel(Level.OFF)
+                        .build())) {
+            var logger = context.getLogger("testCreateAppender");
+            logger.addAppender(appender);
+            logger.setAdditive(false);
+            logger.setLevel(Level.ERROR);
+
+            logger.error("Error via createAppender");
+            var sendGrid = (MockSendGrid) appender.getManager().sendGrid;
+            assertEquals(1, sendGrid.getRequests().size());
+            var mail = new ObjectMapper().readValue(sendGrid.getRequests().get(0).getBody(), Mail.class);
+            assertEquals("to@example.com", mail.getPersonalization().get(0).getTos().get(0).getEmail());
+            assertEquals("cc@example.com", mail.getPersonalization().get(0).getCcs().get(0).getEmail());
+            assertEquals("from@example.com", mail.getFrom().getEmail());
         }
     }
 }
