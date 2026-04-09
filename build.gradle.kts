@@ -12,10 +12,8 @@ group = "com.github.akunzai"
 version = "3.2.0"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(25)
     }
     withJavadocJar()
     withSourcesJar()
@@ -144,8 +142,15 @@ spotbugs {
 
 tasks.withType<JavaCompile>().configureEach {
     if (name.contains("Test")) {
-        sourceCompatibility = "17"
-        targetCompatibility = "17"
+        options.release.set(25)
+    } else {
+        options.release.set(11)
+        options.compilerArgs.addAll(
+            listOf(
+                "-Alog4j.graalvm.groupId=${project.group}",
+                "-Alog4j.graalvm.artifactId=${project.name}"
+            )
+        )
     }
 }
 

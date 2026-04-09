@@ -14,11 +14,8 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
-import org.apache.logging.log4j.message.ReusableMessage;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -54,12 +51,7 @@ class SendGridManager extends AbstractManager {
     }
 
     public void add(LogEvent event) {
-        if (event instanceof Log4jLogEvent && event.getMessage() instanceof ReusableMessage) {
-            ((Log4jLogEvent) event).makeMessageImmutable();
-        } else if (event instanceof MutableLogEvent) {
-            event = ((MutableLogEvent) event).createMemento();
-        }
-        buffer.add(event);
+        buffer.add(event.toImmutable());
     }
 
     /**
