@@ -15,8 +15,6 @@ jobs:
     strategy:
       matrix:
         java:
-          - 17
-          - 21
           - 25
     runs-on: ubuntu-latest
     steps:
