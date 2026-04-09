@@ -145,6 +145,12 @@ tasks.withType<JavaCompile>().configureEach {
         options.release.set(25)
     } else {
         options.release.set(11)
+        options.compilerArgs.addAll(
+            listOf(
+                "-Alog4j.graalvm.groupId=${project.group}",
+                "-Alog4j.graalvm.artifactId=${project.name}"
+            )
+        )
     }
 }
 
