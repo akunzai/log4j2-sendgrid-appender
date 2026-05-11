@@ -2,7 +2,7 @@
 spotbugs = "6.5.1"
 sendgrid = "4.10.3"
 jakartaMail = "2.1.5"
-log4j = "2.25.4"
+log4j = "2.26.0"
 junit = "6.0.3"
 disruptor = "4.0.0"
 javaxMail = "1.6.2"
