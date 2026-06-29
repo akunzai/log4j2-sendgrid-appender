@@ -13,8 +13,25 @@ Send [log4j2](https://logging.apache.org/log4j/2.x/) errors via [SendGrid](https
 
 ## Requirements
 
-- Java 11 runtime
+- Java 11+ runtime (for library consumers)
 - a SendGrid account with your [API key](https://app.sendgrid.com/settings/api_keys)
+
+## Development
+
+The build requires Java 25 (tests and Gradle execution use Java 25; the published artifact targets Java 11 bytecode for compatibility).
+
+Gradle Java Toolchain + [foojay resolver](https://plugins.gradle.org/plugin/org.gradle.toolchains.foojay-resolver-convention) is the primary mechanism and ensures hermetic builds (no manual JDK install needed).
+
+For developers using [mise](https://mise.jdx.dev/):
+- `mise.toml` and `.java-version` are provided for coexistence.
+- Activate mise in your shell; `cd` into the project to get the correct Java automatically.
+- The Gradle build still honors the toolchain declaration in `build.gradle.kts`.
+
+```bash
+# Example (after mise activate)
+mise install
+./gradlew build
+```
 
 ## Installation
 
