@@ -30,7 +30,8 @@ dependencies {
     annotationProcessor(libs.log4j.core)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.disruptor) // required for log4j2 AsyncLogger
-    testImplementation(libs.javax.mail) // required for log4j2 SMTPAppender
+    testImplementation(libs.log4j.jakarta.smtp) // required for log4j2 SMTPAppender (Jakarta version)
+    testRuntimeOnly(libs.angus.mail) // runtime implementation for Jakarta Mail
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     spotbugs(libs.spotbugs.plugin)
     spotbugsPlugins(libs.findsecbugs.plugin)
