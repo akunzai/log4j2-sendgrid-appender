@@ -5,7 +5,6 @@ jakartaMail = "2.1.5"
 log4j = "2.26.0"
 junit = "6.1.0"
 disruptor = "4.0.0"
-javaxMail = "1.6.2"
 spotbugsPlugin = "4.9.8"
 findsecbugs = "1.14.0"
 jackson = "2.22.0"
@@ -18,7 +17,8 @@ jakarta-mail-api = { module = "jakarta.mail:jakarta.mail-api", version.ref = "ja
 log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 disruptor = { module = "com.lmax:disruptor", version.ref = "disruptor" }
-javax-mail = { module = "com.sun.mail:javax.mail", version.ref = "javaxMail" }
+log4j-jakarta-smtp = { module = "org.apache.logging.log4j:log4j-jakarta-smtp", version.ref = "log4j" }
+angus-mail = { module = "org.eclipse.angus:angus-mail", version = "2.0.3" }
 spotbugs-plugin = { module = "com.github.spotbugs:spotbugs", version.ref = "spotbugsPlugin" }
 findsecbugs-plugin = { module = "com.h3xstream.findsecbugs:findsecbugs-plugin", version.ref = "findsecbugs" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
