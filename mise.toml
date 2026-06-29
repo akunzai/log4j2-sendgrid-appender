@@ -1,0 +1,13 @@
+# Java version for this project (build time)
+#
+# Coexists with the Gradle Java Toolchain declared in build.gradle.kts
+# (which uses foojay-resolver-convention for auto-provisioning).
+#
+# - When using mise (https://mise.jdx.dev/): activate mise in your shell so that
+#   entering this directory sets the correct JAVA_HOME and puts the JDK on PATH.
+# - Without mise: Gradle will automatically download and use the required JDK.
+#
+# CI uses Temurin 25. This declaration should stay in sync with the toolchain
+# languageVersion in build.gradle.kts.
+[tools]
+java = "temurin-25"
