@@ -18,7 +18,7 @@ log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "lo
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 disruptor = { module = "com.lmax:disruptor", version.ref = "disruptor" }
 log4j-jakarta-smtp = { module = "org.apache.logging.log4j:log4j-jakarta-smtp", version.ref = "log4j" }
-angus-mail = { module = "org.eclipse.angus:angus-mail", version = "2.0.3" }
+angus-mail = { module = "org.eclipse.angus:angus-mail", version = "2.0.5" }
 spotbugs-plugin = { module = "com.github.spotbugs:spotbugs", version.ref = "spotbugsPlugin" }
 findsecbugs-plugin = { module = "com.h3xstream.findsecbugs:findsecbugs-plugin", version.ref = "findsecbugs" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
