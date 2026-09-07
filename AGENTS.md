@@ -10,16 +10,13 @@ This is a Log4j 2 appender plugin that sends logging events (errors) via the Sen
 
 ## Pointers
 - Core Appender plugin: @src/main/java/com/github/akunzai/log4j/SendGridAppender.java
-- SendGrid Manager: @src/main/java/com/github/akunzai/log4j/SendGridManager.java
-- Message Builder: @src/main/java/com/github/akunzai/log4j/SendGridMessageBuilder.java
 - Gold-standard test: @src/test/java/com/github/akunzai/log4j/SendGridAppenderTest.java
-- Build configuration: @build.gradle.kts
 
 ## Claude Code Compatibility
 
 `CLAUDE.md` is a symbolic link pointing to `AGENTS.md`. Edit `AGENTS.md` directly.
 
-## Self-Reflection
-- **Candidate**: Distill a non-obvious gotcha into ≤ 2 context-tagged bullets. Propose it before writing.
-- **Promote**: On confirmation, put it where whoever would break it must already pass — enforce it (assert/type/test) when the fix is in hand, else a comment at that site, else an agent-facing doc (`docs/agents/<topic>.md`, else `docs/agents/lessons-learned.md`) with one `@path` line under Pointers. Never both.
-- **Prune**: Drop entries once stale (obsolete version, now enforced, duplicated, or a transcript) — not by a fixed count.
+## Prevent Recurrence
+- **Candidate**: Name who hits this again, in which file, on what change. No such scenario, nothing to propose.
+- **Promote**: Offer the first tier that reaches them and only that one, pending confirmation — enforce it (assert/type/test) with its size quoted, else a comment at that site, else an agent-facing doc (`docs/agents/<topic>.md`, else `docs/agents/lessons-learned.md`) with one `@path` line under Pointers and one sentence on why the tiers above cannot hold it.
+- **Prune**: When adding to a file, audit the rest of it in the same pass. Drop entries once stale (obsolete version, now enforced, duplicated, or a transcript) — not by a fixed count.
