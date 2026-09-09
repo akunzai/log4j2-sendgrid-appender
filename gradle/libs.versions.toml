@@ -9,7 +9,7 @@ spotbugsPlugin = "4.10.4"
 findsecbugs = "1.14.0"
 jackson = "2.22.2"
 commonsCodec = "1.22.1"
-jreleaser = "1.25.0"
+jreleaser = "1.26.0"
 
 [libraries]
 sendgrid-java = { module = "com.sendgrid:sendgrid-java", version.ref = "sendgrid" }
