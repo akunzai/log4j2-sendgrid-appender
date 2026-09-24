@@ -54,6 +54,7 @@ Agent may deploy to it: **no**.
 
 ## Capturing evidence
 
+- UI locale: not applicable, the library has no UI.
 - Test logs and reports: build console output, `build/reports/tests/test/index.html`, or JaCoCo coverage reports in `build/reports/jacoco/test/html/index.html`.
 
 **This document is where the capture rules live**, and the request
