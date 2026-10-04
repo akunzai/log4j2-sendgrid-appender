@@ -12,7 +12,7 @@ characters — they live in history and get searched by tooling.
 ## Preparing
 
 - Work on a feature branch. Never prepare a request from the default branch.
-- Prefix the title with a Conventional Commit type, matching this repo's merged history.
+- Use a concise descriptive title with no Conventional Commit prefix.
 - **Do not open a request, draft included, without the developer asking.**
 
 ## Description shape
