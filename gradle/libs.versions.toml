@@ -8,7 +8,7 @@ disruptor = "4.0.0"
 spotbugsPlugin = "4.10.4"
 findsecbugs = "1.14.0"
 jackson = "2.22.3"
-commonsCodec = "1.22.1"
+commonsCodec = "1.23.0"
 jreleaser = "1.26.0"
 
 [libraries]
