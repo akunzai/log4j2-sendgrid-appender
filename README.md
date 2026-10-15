@@ -39,7 +39,7 @@ mise install
 
 ```groovy
 dependencies {
-    implementation 'com.github.akunzai:log4j2-sendgrid-appender:3.2.0'
+    implementation 'com.github.akunzai:log4j2-sendgrid-appender:3.2.1'
 }
 ```
 
@@ -49,7 +49,7 @@ dependencies {
 <dependency>
     <groupId>com.github.akunzai</groupId>
     <artifactId>log4j2-sendgrid-appender</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.1</version>
 </dependency>
 ```
 
