@@ -2,9 +2,10 @@ changelog:
   exclude:
     labels:
       - ignore-for-release
+      - documentation
     authors:
-      - dependabot
-      - renovate
+      - "dependabot[bot]"
+      - "renovate[bot]"
   categories:
     - title: ⚡️ Breaking Changes
       labels:
@@ -17,6 +18,9 @@ changelog:
       labels:
         - bug
         - fix
+    - title: 📦 Dependencies
+      labels:
+        - dependencies
     - title: 🔨 Maintenance
       labels:
         - maintenance
