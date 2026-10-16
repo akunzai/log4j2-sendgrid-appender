@@ -15,6 +15,25 @@ characters — they live in history and get searched by tooling.
 - Use a concise descriptive title with no Conventional Commit prefix.
 - **Do not open a request, draft included, without the developer asking.**
 
+## Labels
+
+Release notes are generated from PR labels by `.github/release.yml`, so label
+every PR with `gh pr create --label <name>` (repeatable). Pick by what changed:
+
+| Change | Label |
+| --- | --- |
+| Incompatible API or behaviour change | `breaking` |
+| New user-facing capability | `enhancement` |
+| Bug fix | `bug` |
+| Dependency or toolchain bump made by hand | `dependencies` |
+| Refactor or build/CI housekeeping | `maintenance` |
+| Docs-only change (left out of the notes) | `documentation` |
+| Anything else that must stay out of the notes | `ignore-for-release` |
+
+An unlabelled PR lands under "Misc". Dependabot PRs are labelled and excluded
+automatically. If a label above does not exist yet, create it once with
+`gh label create <name>` rather than dropping it.
+
 ## Description shape
 
 1. A plain-language opening: what changed and why, as a reviewer who did
